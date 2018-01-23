@@ -1,0 +1,126 @@
+\form#0:$\ldots$
+\form#1:$k_d = 0.32 \mu mol / l $
+\form#2:$ \ldots $
+\form#3:$ 1- $
+\form#4:$ i $
+\form#5:$ j $
+\form#6:$ k $
+\form#7:$ [i:j] $
+\form#8:$ [k:l] $
+\form#9:$ i-j $
+\form#10:$ k-l $
+\form#11:$ (i,j), \ldots, (i+(k-1), j-(k-1)) $
+\form#12:$ p \in [i:j] $
+\form#13:$ q \in [k:l] $
+\form#14:$ (i,j) $
+\form#15:$ (p,q) $
+\form#16:$ i < p < j < q $
+\form#17:$ p < i < q < j $
+\form#18:$ E_{ij} $
+\form#19:\[ E_{ij} = \min \left[ \max_{(i,k) \in \{GC, CG, AU, UA, GU, UG\}} E_{ik}, \max_{(k,j) \in \{GC, CG, AU, UA, GU, UG\}} E_{kj} \right]. \]
+\form#20:$ e $
+\form#21:$ kcal / mol $
+\form#22:$ m $
+\form#23:$ -5 kcal/mol $
+\form#24:$Q$
+\form#25:$G = -RT \cdot \log(Q) $
+\form#26:$q1k(k) = Q(1, k)$
+\form#27:$qln(l) = Q(l, n)$
+\form#28:$ H = - \sum_c p_c \cdot \log_2 p_c $
+\form#29:$i$
+\form#30:$j$
+\form#31:$ p(i,j) = S_i + S_j - p_ij*ln(p_ij) $
+\form#32:$ <d(S)> = \sum_{(i,j) \in S} (1-p_{ij}) + \sum_{(i,j) \notin S} p_{ij} $
+\form#33:$p_ij>0.5$
+\form#34:$(i,j)$
+\form#35:$(k,l)$
+\form#36:$[i:j]$
+\form#37:$[i:k]$
+\form#38:$[l:j]$
+\form#39:$[k:l]$
+\form#40:$(l,j)$
+\form#41:$(i,k)$
+\form#42:$(l,j-1)$
+\form#43:$ d < 0 $
+\form#44:$ d > 0 $
+\form#45:$ d == 0 $
+\form#46:\[ \Delta G_{\text{SHAPE}}(i) = m \ln(\text{SHAPE reactivity}(i)+1)+ b \]
+\form#47:$ b $
+\form#48:$ q_i $
+\form#49:\[ \Delta G_{\text{SHAPE}}(x,i) = \beta\ |x_i - q_i| \]
+\form#50:$ x_i=0 $
+\form#51:$ x_i=1 $
+\form#52:$ \beta $
+\form#53:$ |x_i - q_i| $
+\form#54:$ \hat{E} $
+\form#55:$ dacal/mol $
+\form#56:$ 1 dacal/mol = 10 cal/mol $
+\form#57:$ exp(- \hat{E} / kT) $
+\form#58:$ E $
+\form#59:$ cal/mol $
+\form#60:$<d> = \sum_{a,b} p_a p_b d(S_a,S_b)$
+\form#61:$p_ij$
+\form#62:$<d> = \sum_{ij} p_{ij}(1-p_{ij})$
+\form#63:$(i+1, j-1)$
+\form#64:$ p > \textrm{cutoff} $
+\form#65:$ p $
+\form#66:$ \ge 1 $
+\form#67:$\Sigma$
+\form#68:$ \Sigma = \{A,U,C,G\} $
+\form#69:$\mathrm{strlen}(\mathrm{sequence})+1$
+\form#70:$e^{-\Delta G/kT} $
+\form#71:$\Delta G$
+\form#72:$(n+m)$
+\form#73:$-kT \cdot \log(p)$
+\form#74:$p$
+\form#75:$10^{-2} * \mathrm{kcal}/\mathrm{mol}$
+\form#76:$ N \times M $
+\form#77:$N$
+\form#78:$M$
+\form#79:$X[100][5]$
+\form#80:\[ A(S) = \sum_{(i,j) \in S} 2 \gamma p_{ij} + \sum_{i \notin S} p^u_i \]
+\form#81:$\gamma$
+\form#82:$ exp(-E / (b \cdot kT))$
+\form#83:$exp{((-F/kT)/length)}$
+\form#84:$F$
+\form#85:$ exp(-E / kT) $
+\form#86:$s$
+\form#87:$\hat{q}[i,j] = q[i,j] / s^{(j-i+1)}$
+\form#88:$ s = exp((sfact * MFE) / kT / length )$
+\form#89:$ exp(-\Delta G / kT) $
+\form#90:$ e^{-E/(\alpha \cdot K \cdot T)} $
+\form#91:$ F(\vec\epsilon) = \sum_{i = 1}^n{ \frac{\epsilon_i^2}{\tau^2} } + \sum_{i = 1}^n{ \frac{(p_i(\vec\epsilon) - q_i)^2}{\sigma^2} } \to min $
+\form#92:$ F(\vec\epsilon) = \sum_{i = 1}^n{ \frac{|\epsilon_i|}{\tau^2} } + \sum_{i = 1}^n{ \frac{|p_i(\vec\epsilon) - q_i|}{\sigma^2} } \to min $
+\form#93:\[ F(\vec\epsilon) = \sum_{\mu}{ \frac{\epsilon_{\mu}^2}{\tau^2} } + \sum_{i = 1}^n{ \frac{(p_i(\vec\epsilon) - q_i)^2}{\sigma^2} } \to \min. \]
+\form#94:$P^t$
+\form#95:$rs$
+\form#96:$[0,1]$
+\form#97:$ P^{t}_x[i] = X[i] * rs$
+\form#98:$P^{t}_y[i] = Y[i] * rs$
+\form#99:$ 1~J = 1~kg \cdot m^2 s^{-2} $
+\form#100:$ 1~kJ = 1,000~J $
+\form#101:$ 1~cal_{IT} = 4.1868~J $
+\form#102:$ 1~dacal_{IT} = 10~cal_{IT} = 41.868~J $
+\form#103:$ 1~kcal_{IT} = 4.1868~kJ $
+\form#104:$ 1~cal_{th} = 4.184~J $
+\form#105:$ 1~dacal_{th} = 10~cal_{th} = 41.84~J $
+\form#106:$ 1~kcal_{th} = 4.184~kJ $
+\form#107:$ 1~g~\mathrm{TNT} = 1,000~cal_{th} = 4,184~J $
+\form#108:$ 1~kg~\mathrm{TNT} = 1,000~kcal_{th} = 4,184~kJ $
+\form#109:$ 1~t~\mathrm{TNT} = 1,000,000~kcal_{th} = 4,184~MJ $
+\form#110:$ 1~eV = 1.602176565 \times 10^{-19}~J $
+\form#111:$ 1~W \cdot h = 1~W \cdot 3,600 s = 3,600~J = 3.6~kJ $
+\form#112:$ 1~kW \cdot h = 1~kW \cdot 3,600~s = 3,600~kJ = 3.6~MJ $
+\form#113:$ [^{\circ}C] = [K] - 273.15 $
+\form#114:$ [^{\circ}F] = [K] \times \frac{9}{5} - 459.67 $
+\form#115:$ [^{\circ}R] = [K] \times \frac{9}{5} $
+\form#116:$ [^{\circ}N] = ([K] - 273.15) \times \frac{33}{100} $
+\form#117:$ [^{\circ}De] = (373.15 - [K]) \time \frac{3}{2} $
+\form#118:$ [^{\circ}R{\acute e}] = ([K] - 273.15) \times \frac{4}{5} $
+\form#119:$ [^{\circ}\mathrm{R{\o}}] = ([K] - 273.15) \times \frac{21}{40} + 7.5 $
+\form#120:$f(i,j)$
+\form#121:$[i,j]$
+\form#122:$ [i,j] $
+\form#123:$ 1 \leq i < j \leq n $
+\form#124:$i $
+\form#125:$ 1 \leq i \leq n $

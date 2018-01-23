@@ -1,0 +1,227 @@
+\hypertarget{structure__utils_8h_source}{}\section{structure\+\_\+utils.\+h}
+\label{structure__utils_8h_source}\index{Vienna\+R\+N\+A/structure\+\_\+utils.\+h@{Vienna\+R\+N\+A/structure\+\_\+utils.\+h}}
+
+\begin{DoxyCode}
+00001 \textcolor{preprocessor}{#ifndef VIENNA\_RNA\_PACKAGE\_STRUCT\_UTILS\_H}
+00002 \textcolor{preprocessor}{#define VIENNA\_RNA\_PACKAGE\_STRUCT\_UTILS\_H}
+00003 
+00004 \textcolor{comment}{/* make this interface backward compatible with RNAlib < 2.2.0 */}
+00005 \textcolor{preprocessor}{#define VRNA\_BACKWARD\_COMPAT}
+00006 
+00007 \textcolor{preprocessor}{#ifdef VRNA\_WARN\_DEPRECATED}
+00008 \textcolor{preprocessor}{# ifdef \_\_GNUC\_\_}
+00009 \textcolor{preprocessor}{#  define DEPRECATED(func) func \_\_attribute\_\_ ((deprecated))}
+00010 \textcolor{preprocessor}{# else}
+00011 \textcolor{preprocessor}{#  define DEPRECATED(func) func}
+00012 \textcolor{preprocessor}{# endif}
+00013 \textcolor{preprocessor}{#else}
+00014 \textcolor{preprocessor}{# define DEPRECATED(func) func}
+00015 \textcolor{preprocessor}{#endif}
+00016 
+00028 \textcolor{preprocessor}{#define VRNA\_PLIST\_TYPE\_BASEPAIR      0}
+00029 \textcolor{preprocessor}{#define VRNA\_PLIST\_TYPE\_GQUAD         1}
+00030 \textcolor{preprocessor}{#define VRNA\_PLIST\_TYPE\_H\_MOTIF       2}
+00031 \textcolor{preprocessor}{#define VRNA\_PLIST\_TYPE\_I\_MOTIF       3}
+00032 \textcolor{preprocessor}{#define VRNA\_PLIST\_TYPE\_UD\_MOTIF      4}
+00033 \textcolor{preprocessor}{#define VRNA\_PLIST\_TYPE\_STACK         5}
+00034 
+\Hypertarget{structure__utils_8h_source_l00040}\hyperlink{group__struct__utils_ga7e3f630af8d69bb0e917145aacf2f96d}{00040} \textcolor{preprocessor}{#define VRNA\_BRACKETS\_ALPHA    4U}
+00041 
+\Hypertarget{structure__utils_8h_source_l00047}\hyperlink{group__struct__utils_gac92d5fa7c6625bce2670ece510a24fbd}{00047} \textcolor{preprocessor}{#define VRNA\_BRACKETS\_RND      8U}
+00048 
+\Hypertarget{structure__utils_8h_source_l00054}\hyperlink{group__struct__utils_gaf41be40e79cb756c4e0bb8edb4d803d2}{00054} \textcolor{preprocessor}{#define VRNA\_BRACKETS\_CLY      16U}
+00055 
+\Hypertarget{structure__utils_8h_source_l00061}\hyperlink{group__struct__utils_ga863e03f7f73f10fc9bbcbefbdda4bec8}{00061} \textcolor{preprocessor}{#define VRNA\_BRACKETS\_ANG      32U}
+00062 
+\Hypertarget{structure__utils_8h_source_l00068}\hyperlink{group__struct__utils_ga60525d61d7496eeea490a37f3d6bf757}{00068} \textcolor{preprocessor}{#define VRNA\_BRACKETS\_SQR      64U}
+00069 
+\Hypertarget{structure__utils_8h_source_l00075}\hyperlink{group__struct__utils_ga559ebf76b1b289f85309f4206e99aa1a}{00075} \textcolor{preprocessor}{#define VRNA\_BRACKETS\_DEFAULT  \(\backslash\)}
+00076 \textcolor{preprocessor}{  (VRNA\_BRACKETS\_RND | \(\backslash\)}
+00077 \textcolor{preprocessor}{   VRNA\_BRACKETS\_CLY | \(\backslash\)}
+00078 \textcolor{preprocessor}{   VRNA\_BRACKETS\_ANG | \(\backslash\)}
+00079 \textcolor{preprocessor}{   VRNA\_BRACKETS\_SQR)}
+00080 
+00081 
+\Hypertarget{structure__utils_8h_source_l00085}\hyperlink{group__struct__utils_ga877363f3a1703b53ecd025c6fcf897a0}{00085} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\hyperlink{group__struct__utils_structvrna__hx__s}{vrna\_hx\_s} \hyperlink{group__struct__utils_structvrna__hx__s}{vrna\_hx\_t};
+00086 
+\Hypertarget{structure__utils_8h_source_l00090}\hyperlink{group__struct__utils_gab9ac98ab55ded9fb90043b024b915aca}{00090} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\hyperlink{group__struct__utils_structvrna__elem__prob__s}{vrna\_elem\_prob\_s} \hyperlink{group__struct__utils_structvrna__elem__prob__s}{vrna\_ep\_t};
+00091 
+00092 \textcolor{preprocessor}{#include <stdio.h>}
+00093 
+00094 \textcolor{preprocessor}{#include <\hyperlink{data__structures_8h}{ViennaRNA/data\_structures.h}>}
+00095 
+\Hypertarget{structure__utils_8h_source_l00099}\hyperlink{group__struct__utils}{00099} \textcolor{keyword}{struct }\hyperlink{group__struct__utils_structvrna__hx__s}{vrna\_hx\_s} \{
+00100   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  start;
+00101   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  end;
+00102   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  length;
+00103   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  up5;
+00104   \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  up3;
+00105 \};
+00106 
+\Hypertarget{structure__utils_8h_source_l00115}\hyperlink{group__struct__utils}{00115} \textcolor{keyword}{struct }\hyperlink{group__struct__utils_structvrna__elem__prob__s}{vrna\_elem\_prob\_s} \{
+00116   \textcolor{keywordtype}{int}   i;
+00117   \textcolor{keywordtype}{int}   j;
+00118   \textcolor{keywordtype}{float} p;
+00119   \textcolor{keywordtype}{int}   type;
+00120 \};
+00121 
+00134 \textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_ga55c4783060a1464f862f858d5599c9e1}{vrna\_db\_pack}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *struc);
+00135 
+00136 
+00147 \textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_ga6490adff857d84ce06e6f379ae3a4512}{vrna\_db\_unpack}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *packed);
+00148 
+00149 
+00161 \textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_gae829fb8bb7f694c12a9c0bbc34c77c60}{vrna\_ptable}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure);
+00162 
+00163 
+00179 \textcolor{keywordtype}{short} *
+00180 \hyperlink{group__struct__utils_gac76c9ef3de507748fb0416a59323362b}{vrna\_ptable\_from\_string}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}    *\textcolor{keywordtype}{string},
+00181                         \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  options);
+00182 
+00183 
+00196 \textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_gacca520048b24ec5a8978f4dafb4e4bf8}{vrna\_pt\_pk\_get}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure);
+00197 
+00198 
+00205 \textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_ga2daefbbd6d9f8803731651882f54332d}{vrna\_ptable\_copy}(\textcolor{keyword}{const} \textcolor{keywordtype}{short} *pt);
+00206 
+00207 
+00212 \textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_ga1ee4cdcda1f57d32dcb38032116d335d}{vrna\_pt\_ali\_get}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure);
+00213 
+00214 
+00222 \textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_gaef0f7e1a6c00c81a349973de53039dda}{vrna\_pt\_snoop\_get}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure);
+00223 
+00224 
+00228 \textcolor{keywordtype}{int} *\hyperlink{group__struct__utils_ga03e15af299be0866ff21da880c74b92e}{vrna\_loopidx\_from\_ptable}(\textcolor{keyword}{const} \textcolor{keywordtype}{short} *pt);
+00229 
+00230 
+00246 \textcolor{keywordtype}{void}
+00247 \hyperlink{group__struct__utils_gae966b9f44168a4f4b39ca42ffb5f37b7}{vrna\_db\_flatten}(\textcolor{keywordtype}{char}          *structure,
+00248                 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  options);
+00249 
+00250 
+00270 \textcolor{keywordtype}{void}
+00271 \hyperlink{group__struct__utils_ga690425199c8b71545e7196e3af1436f8}{vrna\_db\_flatten\_to}(\textcolor{keywordtype}{char}         *\textcolor{keywordtype}{string},
+00272                    \textcolor{keyword}{const} \textcolor{keywordtype}{char}   target[3],
+00273                    \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} options);
+00274 
+00275 
+00282 \textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_gaf9ecd0d7877fecdbb0292e24f40283d5}{vrna\_db\_from\_ptable}(\textcolor{keywordtype}{short} *pt);
+00283 
+00284 
+00296 \textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_ga02ca70cffb2d864f7b2d95d92218bae0}{vrna\_db\_from\_WUSS}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *wuss);
+00297 
+00298 
+00310 \textcolor{keywordtype}{int} \hyperlink{group__struct__utils_ga65bdfbac6a16bf30286e8a3f7d15f60a}{vrna\_bp\_distance}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *str1,
+00311                      \textcolor{keyword}{const} \textcolor{keywordtype}{char} *str2);
+00312 
+00313 
+00320 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} *\hyperlink{group__struct__utils_gab4c2a00c99ce1d612ffa5bde114eb96d}{vrna\_refBPcnt\_matrix}(\textcolor{keyword}{const} \textcolor{keywordtype}{short}  *reference\_pt,
+00321                                    \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} turn);
+00322 
+00323 
+00331 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} *\hyperlink{group__struct__utils_ga5a27bd058183170afd4716f5b8ff511a}{vrna\_refBPdist\_matrix}(\textcolor{keyword}{const} \textcolor{keywordtype}{short}   *pt1,
+00332                                     \textcolor{keyword}{const} \textcolor{keywordtype}{short}   *pt2,
+00333                                     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  turn);
+00334 
+00335 
+00339 \textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_ga0c28c410a5ab22d6ab9c77a84e8d5b44}{vrna\_db\_from\_probs}(\textcolor{keyword}{const} \hyperlink{group__data__structures_ga31125aeace516926bf7f251f759b6126}{FLT\_OR\_DBL} *\hyperlink{fold__vars_8h_ac98ec419070aee6831b44e5c700f090f}{pr},
+00340                          \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}     length);
+00341 
+00342 
+00346 \textcolor{keywordtype}{char} \hyperlink{group__struct__utils_ga025bff1b27fa46534c8fae6980f64bb5}{vrna\_bpp\_symbol}(\textcolor{keyword}{const} \textcolor{keywordtype}{float} *x);
+00347 
+00348 
+00360 \textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_ga27bea2c241564af53a065982183389df}{vrna\_db\_from\_bp\_stack}(\hyperlink{group__data__structures_structvrna__bp__stack__s}{vrna\_bp\_stack\_t} *bp,
+00361                             \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}    length);
+00362 
+00363 
+00364 \textcolor{keywordtype}{void} vrna\_letter\_structure(\textcolor{keywordtype}{char}             *structure,
+00365                            \hyperlink{group__data__structures_structvrna__bp__stack__s}{vrna\_bp\_stack\_t}  *bp,
+00366                            \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}     length);
+00367 
+00368 
+00384 \hyperlink{group__struct__utils_structvrna__elem__prob__s}{vrna\_ep\_t} *\hyperlink{group__struct__utils_gaf002d69024d709744664a8b9ca3dd77d}{vrna\_plist}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}  *struc,
+00385                       \textcolor{keywordtype}{float}       \hyperlink{fold__vars_8h_ac98ec419070aee6831b44e5c700f090f}{pr});
+00386 
+00387 
+00404 \hyperlink{group__struct__utils_structvrna__elem__prob__s}{vrna\_ep\_t} *\hyperlink{group__pf__fold_ga94f6efc0b8d8712b023452794a0a5bd2}{vrna\_plist\_from\_probs}(
+      \hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t} *vc,
+00405                                  \textcolor{keywordtype}{double}               cut\_off);
+00406 
+00407 
+00417 \textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_ga6a51a36b9245d0bac868c5cd172b9611}{vrna\_db\_from\_plist}(\hyperlink{group__struct__utils_structvrna__elem__prob__s}{vrna\_ep\_t}    *\hyperlink{group__struct__utils_ga6341cbb704924824e0236c1dce791032}{pairs},
+00418                          \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} n);
+00419 
+00420 
+00421 \textcolor{keywordtype}{char} *vrna\_db\_to\_element\_string(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure);
+00422 
+00423 
+00424 \hyperlink{group__struct__utils_structvrna__hx__s}{vrna\_hx\_t} *vrna\_hx\_from\_ptable(\textcolor{keywordtype}{short} *pt);
+00425 
+00426 
+00427 \hyperlink{group__struct__utils_structvrna__hx__s}{vrna\_hx\_t} *vrna\_hx\_merge(\textcolor{keyword}{const} \hyperlink{group__struct__utils_structvrna__hx__s}{vrna\_hx\_t}  *list,
+00428                          \textcolor{keywordtype}{int}              maxdist);
+00429 
+00430 
+00431 \textcolor{preprocessor}{#ifdef  VRNA\_BACKWARD\_COMPAT}
+00432 
+00433 \textcolor{comment}{/*###########################################*/}
+00434 \textcolor{comment}{/*# deprecated functions below              #*/}
+00435 \textcolor{comment}{/*###########################################*/}
+00436 
+00454 DEPRECATED(\textcolor{keywordtype}{void} \hyperlink{group__struct__utils_gab61df77cf7949cd516181fce0c3d7d78}{assign\_plist\_from\_db}(\hyperlink{group__struct__utils_structvrna__elem__prob__s}{vrna\_ep\_t}  **pl,
+00455                                      \textcolor{keyword}{const} \textcolor{keywordtype}{char} *struc,
+00456                                      \textcolor{keywordtype}{float}      \hyperlink{fold__vars_8h_ac98ec419070aee6831b44e5c700f090f}{pr}));
+00457 
+00470 DEPRECATED(\textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_gac6dfa5e22928c087c6e09ff0054a7ced}{pack\_structure}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *struc));
+00471 
+00482 DEPRECATED(\textcolor{keywordtype}{char} *\hyperlink{group__struct__utils_ga071c6921efe1eb974f115ee6fefa3c39}{unpack\_structure}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *packed));
+00483 
+00495 DEPRECATED(\textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_ga89c32307ee50a0026f4a3131fac0845a}{make\_pair\_table}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure));
+00496 
+00497 DEPRECATED(\textcolor{keywordtype}{short} *make\_pair\_table\_pk(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure));
+00498 
+00507 DEPRECATED(\textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_gafeaa6d68eef3a99d0a7aa08aa91c6601}{copy\_pair\_table}(\textcolor{keyword}{const} \textcolor{keywordtype}{short} *pt));
+00508 
+00514 DEPRECATED(\textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_ga3c81b3967056c3888b8472b65fbb16f5}{alimake\_pair\_table}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure));
+00515 
+00522 DEPRECATED(\textcolor{keywordtype}{short} *\hyperlink{group__struct__utils_ga9aa3bf3b4346bb7fb88efc154dd07a79}{make\_pair\_table\_snoop}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure));
+00523 
+00524 DEPRECATED(\textcolor{keywordtype}{int} *make\_loop\_index\_pt(\textcolor{keywordtype}{short} *pt));
+00525 
+00538 DEPRECATED(\textcolor{keywordtype}{int} \hyperlink{group__struct__utils_ga6ebbcd29a754f0e4f1a66d1fd84184db}{bp\_distance}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *str1,
+00539                            \textcolor{keyword}{const} \textcolor{keywordtype}{char} *str2));
+00540 
+00549 DEPRECATED(\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} *\hyperlink{group__struct__utils_ga578cd9712dee812fb1c58aa3cc489864}{make\_referenceBP\_array}(\textcolor{keywordtype}{short}         *reference\_pt,
+00550                                                 \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  turn));
+00559 DEPRECATED(\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} *\hyperlink{group__struct__utils_gadd463184355d0803b6ee6e09f29182f2}{compute\_BPdifferences}(\textcolor{keywordtype}{short}        *pt1,
+00560                                                \textcolor{keywordtype}{short}        *pt2,
+00561                                                \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} turn));
+00562 
+00582 DEPRECATED(\textcolor{keywordtype}{void}  \hyperlink{group__pf__fold_ga1cc05aaa9b0e7df2d3887e98321c2030}{assign\_plist\_from\_pr}(\hyperlink{group__struct__utils_structvrna__elem__prob__s}{vrna\_ep\_t}   **pl,
+00583                                       \hyperlink{group__data__structures_ga31125aeace516926bf7f251f759b6126}{FLT\_OR\_DBL}  *probs,
+00584                                       \textcolor{keywordtype}{int}         length,
+00585                                       \textcolor{keywordtype}{double}      cutoff));
+00586 
+00594 DEPRECATED(\textcolor{keywordtype}{void} \hyperlink{group__struct__utils_gadf0ad2d46c9ca7b850437d1b79627a7e}{parenthesis\_structure}(\textcolor{keywordtype}{char}            *structure,
+00595                                       \hyperlink{group__data__structures_structvrna__bp__stack__s}{vrna\_bp\_stack\_t} *bp,
+00596                                       \textcolor{keywordtype}{int}             length));
+00597 
+00606 DEPRECATED(\textcolor{keywordtype}{void} \hyperlink{group__struct__utils_gab9c5c8311bd5120900585d4fa50c2df0}{parenthesis\_zuker}(\textcolor{keywordtype}{char}            *structure,
+00607                                   \hyperlink{group__data__structures_structvrna__bp__stack__s}{vrna\_bp\_stack\_t} *bp,
+00608                                   \textcolor{keywordtype}{int}             length));
+00609 
+00610 DEPRECATED(\textcolor{keywordtype}{void} letter\_structure(\textcolor{keywordtype}{char}             *structure,
+00611                                  \hyperlink{group__data__structures_structvrna__bp__stack__s}{vrna\_bp\_stack\_t}  *bp,
+00612                                  \textcolor{keywordtype}{int}              length));
+00613 
+00618 DEPRECATED(\textcolor{keywordtype}{void}  \hyperlink{group__struct__utils_ga129d81c4a1ead793c5b2311333e03dfa}{bppm\_to\_structure}(\textcolor{keywordtype}{char}         *structure,
+00619                                    \hyperlink{group__data__structures_ga31125aeace516926bf7f251f759b6126}{FLT\_OR\_DBL}   *\hyperlink{fold__vars_8h_ac98ec419070aee6831b44e5c700f090f}{pr},
+00620                                    \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} length));
+00621 
+00626 DEPRECATED(\textcolor{keywordtype}{char}    \hyperlink{group__struct__utils_ga49962ad6242b8c628de6ca16bb831c1d}{bppm\_symbol}(\textcolor{keyword}{const} \textcolor{keywordtype}{float} *x));
+00627 
+00628 \textcolor{preprocessor}{#endif}
+00629 
+00634 \textcolor{preprocessor}{#endif}
+\end{DoxyCode}

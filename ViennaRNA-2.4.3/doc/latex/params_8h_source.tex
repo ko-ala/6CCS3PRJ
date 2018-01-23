@@ -1,0 +1,216 @@
+\hypertarget{params_8h_source}{}\section{params.\+h}
+\label{params_8h_source}\index{Vienna\+R\+N\+A/params.\+h@{Vienna\+R\+N\+A/params.\+h}}
+
+\begin{DoxyCode}
+00001 \textcolor{preprocessor}{#ifndef VIENNA\_RNA\_PACKAGE\_PARAMS\_H}
+00002 \textcolor{preprocessor}{#define VIENNA\_RNA\_PACKAGE\_PARAMS\_H}
+00003 
+00004 \textcolor{preprocessor}{#ifdef VRNA\_WARN\_DEPRECATED}
+00005 \textcolor{preprocessor}{# ifdef \_\_GNUC\_\_}
+00006 \textcolor{preprocessor}{#  define DEPRECATED(func) func \_\_attribute\_\_ ((deprecated))}
+00007 \textcolor{preprocessor}{# else}
+00008 \textcolor{preprocessor}{#  define DEPRECATED(func) func}
+00009 \textcolor{preprocessor}{# endif}
+00010 \textcolor{preprocessor}{#else}
+00011 \textcolor{preprocessor}{# define DEPRECATED(func) func}
+00012 \textcolor{preprocessor}{#endif}
+00013 
+00014 \textcolor{comment}{/* make this interface backward compatible with RNAlib < 2.2.0 */}
+00015 \textcolor{preprocessor}{#define VRNA\_BACKWARD\_COMPAT}
+00016 
+\Hypertarget{params_8h_source_l00037}\hyperlink{group__energy__parameters_ga8a69ca7d787e4fd6079914f5343a1f35}{00037} \textcolor{keyword}{typedef} \textcolor{keyword}{struct  }\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_s} \hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t};
+\Hypertarget{params_8h_source_l00039}\hyperlink{group__energy__parameters_ga01d8b92fe734df8d79a6169482c7d8d8}{00039} \textcolor{keyword}{typedef} \textcolor{keyword}{struct  }\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_s} \hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t};
+00040 
+00041 \textcolor{preprocessor}{#include <\hyperlink{energy__const_8h}{ViennaRNA/energy\_const.h}>}
+00042 \textcolor{preprocessor}{#include <\hyperlink{data__structures_8h}{ViennaRNA/data\_structures.h}>}
+00043 \textcolor{preprocessor}{#include <\hyperlink{model_8h}{ViennaRNA/model.h}>}
+00044 
+00045 \textcolor{preprocessor}{#define   VRNA\_GQUAD\_MAX\_STACK\_SIZE     7}
+00046 \textcolor{preprocessor}{#define   VRNA\_GQUAD\_MIN\_STACK\_SIZE     2}
+00047 \textcolor{preprocessor}{#define   VRNA\_GQUAD\_MAX\_LINKER\_LENGTH  15}
+00048 \textcolor{preprocessor}{#define   VRNA\_GQUAD\_MIN\_LINKER\_LENGTH  1}
+00049 \textcolor{preprocessor}{#define   VRNA\_GQUAD\_MIN\_BOX\_SIZE       ((4 * VRNA\_GQUAD\_MIN\_STACK\_SIZE) + \(\backslash\)}
+00050 \textcolor{preprocessor}{                                         (3 * VRNA\_GQUAD\_MIN\_LINKER\_LENGTH))}
+00051 \textcolor{preprocessor}{#define   VRNA\_GQUAD\_MAX\_BOX\_SIZE       ((4 * VRNA\_GQUAD\_MAX\_STACK\_SIZE) + \(\backslash\)}
+00052 \textcolor{preprocessor}{                                         (3 * VRNA\_GQUAD\_MAX\_LINKER\_LENGTH))}
+00053 
+\Hypertarget{params_8h_source_l00057}\hyperlink{group__energy__parameters}{00057} \textcolor{keyword}{struct }\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_s} \{
+00058   \textcolor{keywordtype}{int}       id;
+00059   \textcolor{keywordtype}{int}       stack[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1];
+00060   \textcolor{keywordtype}{int}       hairpin[31];
+00061   \textcolor{keywordtype}{int}       bulge[\hyperlink{energy__const_8h_ad1bd6eabac419670ddd3c9ed82145988}{MAXLOOP} + 1];
+00062   \textcolor{keywordtype}{int}       internal\_loop[\hyperlink{energy__const_8h_ad1bd6eabac419670ddd3c9ed82145988}{MAXLOOP} + 1];
+00063   \textcolor{keywordtype}{int}       mismatchExt[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00064   \textcolor{keywordtype}{int}       mismatchI[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00065   \textcolor{keywordtype}{int}       mismatch1nI[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00066   \textcolor{keywordtype}{int}       mismatch23I[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00067   \textcolor{keywordtype}{int}       mismatchH[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00068   \textcolor{keywordtype}{int}       mismatchM[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00069   \textcolor{keywordtype}{int}       dangle5[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5];
+00070   \textcolor{keywordtype}{int}       dangle3[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5];
+00071   \textcolor{keywordtype}{int}       int11[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00072   \textcolor{keywordtype}{int}       int21[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5][5];
+00073   \textcolor{keywordtype}{int}       int22[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5][5][5];
+00074   \textcolor{keywordtype}{int}       ninio[5];
+00075   \textcolor{keywordtype}{double}    lxc;
+00076   \textcolor{keywordtype}{int}       MLbase;
+00077   \textcolor{keywordtype}{int}       MLintern[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1];
+00078   \textcolor{keywordtype}{int}       MLclosing;
+00079   \textcolor{keywordtype}{int}       TerminalAU;
+00080   \textcolor{keywordtype}{int}       DuplexInit;
+00081   \textcolor{keywordtype}{int}       Tetraloop\_E[200];
+00082   \textcolor{keywordtype}{char}      Tetraloops[1401];
+00083   \textcolor{keywordtype}{int}       Triloop\_E[40];
+00084   \textcolor{keywordtype}{char}      Triloops[241];
+00085   \textcolor{keywordtype}{int}       Hexaloop\_E[40];
+00086   \textcolor{keywordtype}{char}      Hexaloops[1801];
+00087   \textcolor{keywordtype}{int}       TripleC;
+00088   \textcolor{keywordtype}{int}       MultipleCA;
+00089   \textcolor{keywordtype}{int}       MultipleCB;
+00090   \textcolor{keywordtype}{int}       gquad [VRNA\_GQUAD\_MAX\_STACK\_SIZE + 1]
+00091   [3 * VRNA\_GQUAD\_MAX\_LINKER\_LENGTH + 1];
+00092 
+\Hypertarget{params_8h_source_l00093}\hyperlink{group__energy__parameters_aeed2cd83713012bcb52e431041e037c8}{00093}   \textcolor{keywordtype}{double}    \hyperlink{group__energy__parameters_aeed2cd83713012bcb52e431041e037c8}{temperature};      
+\Hypertarget{params_8h_source_l00095}\hyperlink{group__energy__parameters_a7b84353eb9075c595bad4ceb871bcae7}{00095}   \hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t} \hyperlink{group__energy__parameters_a7b84353eb9075c595bad4ceb871bcae7}{model\_details};    
+\Hypertarget{params_8h_source_l00096}\hyperlink{group__energy__parameters_ace10aa4aacffcbf6de92349f2ee0d66a}{00096}   \textcolor{keywordtype}{char}      \hyperlink{group__energy__parameters_ace10aa4aacffcbf6de92349f2ee0d66a}{param\_file}[256];  
+00097 \};
+00098 
+\Hypertarget{params_8h_source_l00102}\hyperlink{group__energy__parameters}{00102} \textcolor{keyword}{struct }\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_s} \{
+\Hypertarget{params_8h_source_l00103}\hyperlink{group__energy__parameters_a378d5bcf2bae1f3ec84c912c7d3908d2}{00103}   \textcolor{keywordtype}{int}     \hyperlink{group__energy__parameters_a378d5bcf2bae1f3ec84c912c7d3908d2}{id};   
+00106   \textcolor{keywordtype}{double}  expstack[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1];
+00107   \textcolor{keywordtype}{double}  exphairpin[31];
+00108   \textcolor{keywordtype}{double}  expbulge[\hyperlink{energy__const_8h_ad1bd6eabac419670ddd3c9ed82145988}{MAXLOOP} + 1];
+00109   \textcolor{keywordtype}{double}  expinternal[\hyperlink{energy__const_8h_ad1bd6eabac419670ddd3c9ed82145988}{MAXLOOP} + 1];
+00110   \textcolor{keywordtype}{double}  expmismatchExt[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00111   \textcolor{keywordtype}{double}  expmismatchI[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00112   \textcolor{keywordtype}{double}  expmismatch23I[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00113   \textcolor{keywordtype}{double}  expmismatch1nI[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00114   \textcolor{keywordtype}{double}  expmismatchH[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00115   \textcolor{keywordtype}{double}  expmismatchM[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00116   \textcolor{keywordtype}{double}  expdangle5[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5];
+00117   \textcolor{keywordtype}{double}  expdangle3[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5];
+00118   \textcolor{keywordtype}{double}  expint11[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5];
+00119   \textcolor{keywordtype}{double}  expint21[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5][5];
+00120   \textcolor{keywordtype}{double}  expint22[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1][5][5][5][5];
+00121   \textcolor{keywordtype}{double}  expninio[5][\hyperlink{energy__const_8h_ad1bd6eabac419670ddd3c9ed82145988}{MAXLOOP} + 1];
+00122   \textcolor{keywordtype}{double}  lxc;
+00123   \textcolor{keywordtype}{double}  expMLbase;
+00124   \textcolor{keywordtype}{double}  expMLintern[\hyperlink{energy__const_8h_a5e75221c779d618eab81e096f37e32ce}{NBPAIRS} + 1];
+00125   \textcolor{keywordtype}{double}  expMLclosing;
+00126   \textcolor{keywordtype}{double}  expTermAU;
+00127   \textcolor{keywordtype}{double}  expDuplexInit;
+00128   \textcolor{keywordtype}{double}  exptetra[40];
+00129   \textcolor{keywordtype}{double}  exptri[40];
+00130   \textcolor{keywordtype}{double}  exphex[40];
+00131   \textcolor{keywordtype}{char}    Tetraloops[1401];
+00132   \textcolor{keywordtype}{double}  expTriloop[40];
+00133   \textcolor{keywordtype}{char}    Triloops[241];
+00134   \textcolor{keywordtype}{char}    Hexaloops[1801];
+00135   \textcolor{keywordtype}{double}  expTripleC;
+00136   \textcolor{keywordtype}{double}  expMultipleCA;
+00137   \textcolor{keywordtype}{double}  expMultipleCB;
+00138   \textcolor{keywordtype}{double}  expgquad[VRNA\_GQUAD\_MAX\_STACK\_SIZE + 1]
+00139   [3 * VRNA\_GQUAD\_MAX\_LINKER\_LENGTH + 1];
+00140 
+00141   \textcolor{keywordtype}{double}  kT;
+\Hypertarget{params_8h_source_l00142}\hyperlink{group__energy__parameters_a53c12f0d74f94ce371e0471a8ab5a377}{00142}   \textcolor{keywordtype}{double}  \hyperlink{group__energy__parameters_a53c12f0d74f94ce371e0471a8ab5a377}{pf\_scale};         
+\Hypertarget{params_8h_source_l00144}\hyperlink{group__energy__parameters_a674656d65ea957ddbeff8bd146b7fc16}{00144}   \textcolor{keywordtype}{double}  \hyperlink{group__energy__parameters_a674656d65ea957ddbeff8bd146b7fc16}{temperature};      
+\Hypertarget{params_8h_source_l00145}\hyperlink{group__energy__parameters_a77145830b7bb01b36c3217b363310ef0}{00145}   \textcolor{keywordtype}{double}  \hyperlink{group__energy__parameters_a77145830b7bb01b36c3217b363310ef0}{alpha};            
+\Hypertarget{params_8h_source_l00152}\hyperlink{group__energy__parameters_ac18055127bccc27c1223f1d2f3b01b53}{00152}   \hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t} \hyperlink{group__energy__parameters_ac18055127bccc27c1223f1d2f3b01b53}{model\_details};  
+\Hypertarget{params_8h_source_l00153}\hyperlink{group__energy__parameters_a8e1b02a4753a9b64c3c9ae8529b9d75c}{00153}   \textcolor{keywordtype}{char}      \hyperlink{group__energy__parameters_ace10aa4aacffcbf6de92349f2ee0d66a}{param\_file}[256];  
+00154 \};
+00155 
+00156 
+00168 \hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *
+00169 \hyperlink{group__energy__parameters_gad0e3e7e74bdc50d1709d40c92993185e}{vrna\_params}(\hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t} *md);
+00170 
+00171 
+00183 \hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *
+00184 \hyperlink{group__energy__parameters_ga4bffa39f26e7746148444dd8a8426eca}{vrna\_params\_copy}(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *par);
+00185 
+00186 
+00209 \hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *
+00210 \hyperlink{group__energy__parameters_gab1f3016f96aa96bff020cdd904605afa}{vrna\_exp\_params}(\hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t} *md);
+00211 
+00212 
+00226 \hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *
+00227 \hyperlink{group__energy__parameters_gaf78c09e685e6eef4100b1a41d4042550}{vrna\_exp\_params\_comparative}(\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}  n\_seq,
+00228                             \hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t}     *md);
+00229 
+00230 
+00242 \hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *
+00243 \hyperlink{group__energy__parameters_ga70bc46be7cfa5434a71efe241c4f0609}{vrna\_exp\_params\_copy}(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *par);
+00244 
+00245 
+00258 \textcolor{keywordtype}{void}
+00259 \hyperlink{group__energy__parameters_ga5d1909208f7ea3baa98b75afaa1f62ca}{vrna\_params\_subst}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t}  *vc,
+00260                   \hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t}          *par);
+00261 
+00262 
+00280 \textcolor{keywordtype}{void}
+00281 \hyperlink{group__energy__parameters_ga8e7ac4fab3b0cc03afbc134eaafb3525}{vrna\_exp\_params\_subst}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t}  *vc,
+00282                       \hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t}      *params);
+00283 
+00284 
+00322 \textcolor{keywordtype}{void}
+00323 \hyperlink{group__energy__parameters_gad607bc3a5b5da16400e2ca4ea5560233}{vrna\_exp\_params\_rescale}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t}  *vc,
+00324                         \textcolor{keywordtype}{double}                *mfe);
+00325 
+00326 
+00340 \textcolor{keywordtype}{void} \hyperlink{group__energy__parameters_gac40dc82e48a72a97cfc58b9da08a7792}{vrna\_params\_reset}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t} *vc,
+00341                        \hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t}            *md\_p);
+00342 
+00343 
+00358 \textcolor{keywordtype}{void} \hyperlink{group__energy__parameters_gaa5409218068be84d7b50c78fbdaa85a9}{vrna\_exp\_params\_reset}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t} *vc,
+00359                            \hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t}            *md\_p);
+00360 
+00361 
+00362 \textcolor{keywordtype}{void} vrna\_params\_prepare(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t} *vc,
+00363                          \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}         options);
+00364 
+00365 
+00366 \textcolor{preprocessor}{#ifdef  VRNA\_BACKWARD\_COMPAT}
+00367 
+\Hypertarget{params_8h_source_l00372}\hyperlink{group__energy__parameters_ga857dde86357d306cc902f0d8b2797659}{00372} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_s} \hyperlink{group__energy__parameters_structvrna__param__s}{paramT};
+00373 
+\Hypertarget{params_8h_source_l00378}\hyperlink{group__energy__parameters_ga8bffe1828e2cbec101769f5cc0b1535b}{00378} \textcolor{keyword}{typedef} \textcolor{keyword}{struct }\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_s} \hyperlink{group__energy__parameters_structvrna__exp__param__s}{pf\_paramT};
+00379 
+00380 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *get\_parameter\_copy(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *par));
+00381 
+00391 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *\hyperlink{group__energy__parameters_gabf3b9271c41dd3fac02d56e0b02b3344}{get\_scaled\_pf\_parameters}(\textcolor{keywordtype}{void}));
+00392 
+00418 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *\hyperlink{group__energy__parameters_gaef2b931c7e9d4ffb0a5c33df50ec2068}{get\_boltzmann\_factors}(\textcolor{keywordtype}{double}     
+      \hyperlink{group__energy__parameters_aeed2cd83713012bcb52e431041e037c8}{temperature},
+00419                                                    \textcolor{keywordtype}{double}     betaScale,
+00420                                                    \hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t}  md,
+00421                                                    \textcolor{keywordtype}{double}     \hyperlink{group__model__details_gad3b22044065acc6dee0af68931b52cfd}{pf\_scale}));
+00422 
+00433 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *\hyperlink{group__energy__parameters_ga665a446ba8ff211e551297a8fa36ec27}{get\_boltzmann\_factor\_copy}(
+      \hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *parameters));
+00434 
+00442 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *\hyperlink{group__energy__parameters_ga0ccf4e1be085a573533fd6b9da2d8cf9}{get\_scaled\_alipf\_parameters}(\textcolor{keywordtype}{
+      unsigned} \textcolor{keywordtype}{int} n\_seq));
+00443 
+00452 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *\hyperlink{group__energy__parameters_ga2aa1d87c97f35d2e4121634a17556829}{get\_boltzmann\_factors\_ali}(\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{
+      int} n\_seq,
+00453                                                        \textcolor{keywordtype}{double}       \hyperlink{group__energy__parameters_aeed2cd83713012bcb52e431041e037c8}{temperature},
+00454                                                        \textcolor{keywordtype}{double}       betaScale,
+00455                                                        \hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t}    md,
+00456                                                        \textcolor{keywordtype}{double}       \hyperlink{group__model__details_gad3b22044065acc6dee0af68931b52cfd}{pf\_scale}));
+00457 
+00469 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *\hyperlink{group__energy__parameters_ga541f2cf7436e9bc939b0a49b24baf987}{scale\_parameters}(\textcolor{keywordtype}{void}));
+00470 
+00487 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *\hyperlink{group__energy__parameters_ga7fa6a000d7c16feab939f2c4ee626197}{get\_scaled\_parameters}(\textcolor{keywordtype}{double}     
+      \hyperlink{group__energy__parameters_aeed2cd83713012bcb52e431041e037c8}{temperature},
+00488                                                \hyperlink{group__model__details_structvrna__md__s}{vrna\_md\_t}  md));
+00489 
+00490 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *copy\_parameters(\textcolor{keywordtype}{void}));
+00491 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *set\_parameters(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *dest));
+00492 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *scale\_pf\_parameters(\textcolor{keywordtype}{void}));
+00493 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *copy\_pf\_param(\textcolor{keywordtype}{void}));
+00494 DEPRECATED(\hyperlink{group__energy__parameters_structvrna__exp__param__s}{vrna\_exp\_param\_t} *set\_pf\_param(\hyperlink{group__energy__parameters_structvrna__param__s}{vrna\_param\_t} *dest));
+00495 
+00496 \textcolor{preprocessor}{#endif}
+00497 
+00503 \textcolor{preprocessor}{#endif}
+\end{DoxyCode}

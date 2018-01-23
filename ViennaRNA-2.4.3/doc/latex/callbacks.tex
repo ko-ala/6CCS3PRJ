@@ -1,0 +1,68 @@
+With the new v3.\+0 A\+PI {\itshape R\+N\+Alib} introduces so-\/called callback mechanisms for several functions.
+
+This enables users of our library not only to retrieve computed data without the need for parsing complicated data structures, but also allows one to tweak our implementation to do additional tasks without the requirement of a re-\/implementation of basic algorithms.
+
+Our implementation of the callback mechanisms always follows the same scheme\+: The user\+:
+\begin{DoxyItemize}
+\item defines a function that complies with the interface we\textquotesingle{}ve defined, and
+\item passes a pointer to said function to our implementations
+\end{DoxyItemize}
+
+In addition to the specific arguments of our callback interfaces, virtually all callbacks receive an additional {\itshape pass-\/through-\/pointer} as their last argument. This enables one to\+:
+\begin{DoxyItemize}
+\item encapsulate data, and
+\item provide thread-\/safe operations,
+\end{DoxyItemize}
+
+since this pointer is simply passed through by our library functions. It may therefore hold the address of an arbitrary, user-\/defined data structure.
+
+Below, you find an enumeration of the individual callback functions that are available in R\+N\+Alib.
+
+
+\begin{DoxyRefList}
+\item[\label{callbacks__callbacks000005}%
+\Hypertarget{callbacks__callbacks000005}%
+Global \hyperlink{group__fold__compound_ga7806651f51b195013839a218b3bbd5a3}{vrna\+\_\+callback\+\_\+free\+\_\+auxdata} (void $\ast$data)]This callback is supposed to free memory occupied by an auxiliary data structure. It will be called when the \hyperlink{group__fold__compound_ga1b0cef17fd40466cef5968eaeeff6166}{vrna\+\_\+fold\+\_\+compound\+\_\+t} is erased from memory through a call to \hyperlink{group__fold__compound_gadded6039d63f5d6509836e20321534ad}{vrna\+\_\+fold\+\_\+compound\+\_\+free()} and will be passed the address of memory previously bound to the \hyperlink{group__fold__compound_ga1b0cef17fd40466cef5968eaeeff6166}{vrna\+\_\+fold\+\_\+compound\+\_\+t} via \hyperlink{group__fold__compound_ga6316a9426bea2f742375e8df6febd3f6}{vrna\+\_\+fold\+\_\+compound\+\_\+add\+\_\+auxdata()}.  
+\item[\label{callbacks__callbacks000001}%
+\Hypertarget{callbacks__callbacks000001}%
+Global \hyperlink{group__hard__constraints_gae465f1d4a3d8b6592b38ecbb0d9f613d}{vrna\+\_\+callback\+\_\+hc\+\_\+evaluate} (int i, int j, int k, int l, unsigned char d, void $\ast$data)]This callback enables one to over-\/rule default hard constraints in secondary structure decompositions.  
+\item[\label{callbacks__callbacks000006}%
+\Hypertarget{callbacks__callbacks000006}%
+Global \hyperlink{group__fold__compound_gac86036fa8cad1108832335063243cdc8}{vrna\+\_\+callback\+\_\+recursion\+\_\+status} (unsigned char status, void $\ast$data)]This function will be called to notify a third-\/party implementation about the status of a currently ongoing recursion. The purpose of this callback mechanism is to provide users with a simple way to ensure pre-\/ and post conditions for auxiliary mechanisms attached to our implementations.  
+\item[\label{callbacks__callbacks000004}%
+\Hypertarget{callbacks__callbacks000004}%
+Global \hyperlink{group__soft__constraints_gaeb6448da6c593d4c489c7fbadcb99499}{vrna\+\_\+callback\+\_\+sc\+\_\+backtrack} (int i, int j, int k, int l, unsigned char d, void $\ast$data)]This callback enables one to add auxiliary base pairs in the backtracking steps of hairpin-\/ and interior loops.  
+\item[\label{callbacks__callbacks000002}%
+\Hypertarget{callbacks__callbacks000002}%
+Global \hyperlink{group__soft__constraints_ga88a266695d9e25cc12114dceb7b4565e}{vrna\+\_\+callback\+\_\+sc\+\_\+energy} (int i, int j, int k, int l, unsigned char d, void $\ast$data)]This callback enables one to add (pseudo-\/)energy contributions to individual decompositions of the secondary structure.  
+\item[\label{callbacks__callbacks000003}%
+\Hypertarget{callbacks__callbacks000003}%
+Global \hyperlink{group__soft__constraints_ga4099978d410513edeeff8f3db13144c5}{vrna\+\_\+callback\+\_\+sc\+\_\+exp\+\_\+energy} (int i, int j, int k, int l, unsigned char d, void $\ast$data)]This callback enables one to add (pseudo-\/)energy contributions to individual decompositions of the secondary structure (Partition function variant, i.\+e. contributions must be returned as Boltzmann factors).  
+\item[\label{callbacks__callbacks000010}%
+\Hypertarget{callbacks__callbacks000010}%
+Global \hyperlink{group__domains__up_ga75825c57d0bfde4ae4f95c044260c5c3}{vrna\+\_\+callback\+\_\+ud\+\_\+energy} (vrna\+\_\+fold\+\_\+compound\+\_\+t $\ast$vc, int i, int j, unsigned int loop\+\_\+type, void $\ast$data)]This function will be called to determine the additional energy contribution of a specific unstructured domain, e.\+g. the binding free energy of some ligand.  
+\item[\label{callbacks__callbacks000011}%
+\Hypertarget{callbacks__callbacks000011}%
+Global \hyperlink{group__domains__up_ga861706f257ba993753464b823e65b86e}{vrna\+\_\+callback\+\_\+ud\+\_\+exp\+\_\+energy} (vrna\+\_\+fold\+\_\+compound\+\_\+t $\ast$vc, int i, int j, unsigned int loop\+\_\+type, void $\ast$data)]This function will be called to determine the additional energy contribution of a specific unstructured domain, e.\+g. the binding free energy of some ligand (Partition function variant, i.\+e. the Boltzmann factors instead of actual free energies).  
+\item[\label{callbacks__callbacks000013}%
+\Hypertarget{callbacks__callbacks000013}%
+Global \hyperlink{group__domains__up_ga33d78327dcd04c1ca5ab2887edc18c7b}{vrna\+\_\+callback\+\_\+ud\+\_\+exp\+\_\+production} (vrna\+\_\+fold\+\_\+compound\+\_\+t $\ast$vc, void $\ast$data)]The production rule for the unstructured domain grammar extension (Partition function variant)  
+\item[\label{callbacks__callbacks000014}%
+\Hypertarget{callbacks__callbacks000014}%
+Global \hyperlink{group__domains__up_gab10498abc84fcaf336aca8f8d7d42eb2}{vrna\+\_\+callback\+\_\+ud\+\_\+probs\+\_\+add} (vrna\+\_\+fold\+\_\+compound\+\_\+t $\ast$vc, int i, int j, unsigned int loop\+\_\+type, F\+L\+T\+\_\+\+O\+R\+\_\+\+D\+BL exp\+\_\+energy, void $\ast$data)]A callback function to store equilibrium probabilities for the unstructured domain feature  
+\item[\label{callbacks__callbacks000015}%
+\Hypertarget{callbacks__callbacks000015}%
+Global \hyperlink{group__domains__up_gaa10ba1b6f1e179ea84c5caca9cdaae67}{vrna\+\_\+callback\+\_\+ud\+\_\+probs\+\_\+get} (vrna\+\_\+fold\+\_\+compound\+\_\+t $\ast$vc, int i, int j, unsigned int loop\+\_\+type, int motif, void $\ast$data)]A callback function to retrieve equilibrium probabilities for the unstructured domain feature  
+\item[\label{callbacks__callbacks000012}%
+\Hypertarget{callbacks__callbacks000012}%
+Global \hyperlink{group__domains__up_ga4fdfc02c1b660c07f2d887772f02a0a1}{vrna\+\_\+callback\+\_\+ud\+\_\+production} (vrna\+\_\+fold\+\_\+compound\+\_\+t $\ast$vc, void $\ast$data)]The production rule for the unstructured domain grammar extension  
+\item[\label{callbacks__callbacks000008}%
+\Hypertarget{callbacks__callbacks000008}%
+Global \hyperlink{group__mfe__fold_ga4f3e5bc214ef803074ace313cb9571b4}{vrna\+\_\+mfe\+\_\+window\+\_\+callback} (int start, int end, const char $\ast$structure, float en, void $\ast$data)]This function will be called for each hit in a sliding window M\+FE prediction.  
+\item[\label{callbacks__callbacks000007}%
+\Hypertarget{callbacks__callbacks000007}%
+Global \hyperlink{LPfold_8h_abe710a1182e6db69cc75329dfc9bed67}{vrna\+\_\+probs\+\_\+window\+\_\+callback} (F\+L\+T\+\_\+\+O\+R\+\_\+\+D\+BL $\ast$pr, int pr\+\_\+size, int i, int max, unsigned int type, void $\ast$data)]This function will be called for each probability data set in the sliding window probability computation implementation of \hyperlink{group__local__pf__fold_ga70ec33810fa17a9f67a7c59f156d0137}{vrna\+\_\+probs\+\_\+window()}. The argument {\itshape type} specifies the type of probability that is passed to this function.  
+\item[\label{callbacks__callbacks000009}%
+\Hypertarget{callbacks__callbacks000009}%
+Global \hyperlink{group__subopt__wuchty_gaa0270c66d04f59e750401695b8282e04}{vrna\+\_\+subopt\+\_\+callback} (const char $\ast$stucture, float energy, void $\ast$data)]This function will be called for each suboptimal secondary structure that is successfully backtraced. 
+\end{DoxyRefList}

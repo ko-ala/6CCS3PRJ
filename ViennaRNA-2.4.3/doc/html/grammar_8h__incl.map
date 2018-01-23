@@ -1,0 +1,17 @@
+<map id="ViennaRNA/grammar.h" name="ViennaRNA/grammar.h">
+<area shape="rect" id="node2" href="$data__structures_8h.html" title="Various data structures and pre&#45;processor macros. " alt="" coords="725,80,919,107"/>
+<area shape="rect" id="node3" href="$energy__const_8h.html" title="Energy parameter constants. " alt="" coords="609,341,792,367"/>
+<area shape="rect" id="node5" href="$fold__compound_8h.html" title="The Basic Fold Compound API. " alt="" coords="329,162,521,189"/>
+<area shape="rect" id="node6" href="$model_8h.html" title="The model details data structure and its corresponding modifiers. " alt="" coords="446,341,585,367"/>
+<area shape="rect" id="node7" href="$params_8h.html" title="Functions to deal with sets of energy parameters. " alt="" coords="670,251,817,278"/>
+<area shape="rect" id="node8" href="$dp__matrices_8h.html" title="Functions to deal with standard dynamic programming (DP) matrices. " alt="" coords="5,251,180,278"/>
+<area shape="rect" id="node9" href="$constraints_8h.html" title="Functions and data structures for constraining secondary structure predictions and evaluation..." alt="" coords="993,251,1161,278"/>
+<area shape="rect" id="node15" href="$structured__domains_8h.html" title="This module provides interfaces that deal with additional structured domains in the folding grammar..." alt="" coords="204,244,355,285"/>
+<area shape="rect" id="node16" href="$unstructured__domains_8h.html" title="Functions to modify unstructured domains, e.g. to incorporate ligands binding to unpaired stretches..." alt="" coords="430,244,595,285"/>
+<area shape="rect" id="node17" href="$structure__utils_8h.html" title="Various utility&#45; and helper&#45;functions for secondary structure parsing, converting, etc. " alt="" coords="1067,155,1211,196"/>
+<area shape="rect" id="node10" href="$constraints__hard_8h.html" title="Functions and data structures for handling of secondary structure hard constraints. " alt="" coords="817,333,974,375"/>
+<area shape="rect" id="node11" href="$constraints__soft_8h.html" title="Functions and data structures for secondary structure soft constraints. " alt="" coords="998,333,1155,375"/>
+<area shape="rect" id="node12" href="$constraints__SHAPE_8h.html" title="This module provides function to incorporate SHAPE reactivity data into the folding recursions by mea..." alt="" coords="1179,333,1337,375"/>
+<area shape="rect" id="node13" href="$perturbation__fold_8h.html" title="Find a vector of perturbation energies that minimizes the discripancies between predicted and observe..." alt="" coords="1361,333,1523,375"/>
+<area shape="rect" id="node14" href="$constraints__ligand_8h.html" title="Functions for incorporation of ligands binding to hairpin and interior loop motifs using the soft con..." alt="" coords="1547,333,1705,375"/>
+</map>

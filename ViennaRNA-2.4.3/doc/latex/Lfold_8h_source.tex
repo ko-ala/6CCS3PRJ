@@ -1,0 +1,93 @@
+\hypertarget{Lfold_8h_source}{}\section{Lfold.\+h}
+\label{Lfold_8h_source}\index{Vienna\+R\+N\+A/\+Lfold.\+h@{Vienna\+R\+N\+A/\+Lfold.\+h}}
+
+\begin{DoxyCode}
+00001 \textcolor{preprocessor}{#ifndef VIENNA\_RNA\_PACKAGE\_LFOLD\_H}
+00002 \textcolor{preprocessor}{#define VIENNA\_RNA\_PACKAGE\_LFOLD\_H}
+00003 
+00010 \textcolor{comment}{/* make this interface backward compatible with RNAlib < 2.2.0 */}
+00011 \textcolor{preprocessor}{#define VRNA\_BACKWARD\_COMPAT}
+00012 
+00013 \textcolor{preprocessor}{#ifdef VRNA\_WARN\_DEPRECATED}
+00014 \textcolor{preprocessor}{# ifdef \_\_GNUC\_\_}
+00015 \textcolor{preprocessor}{#  define DEPRECATED(func) func \_\_attribute\_\_ ((deprecated))}
+00016 \textcolor{preprocessor}{# else}
+00017 \textcolor{preprocessor}{#  define DEPRECATED(func) func}
+00018 \textcolor{preprocessor}{# endif}
+00019 \textcolor{preprocessor}{#else}
+00020 \textcolor{preprocessor}{# define DEPRECATED(func) func}
+00021 \textcolor{preprocessor}{#endif}
+00022 
+00023 \textcolor{preprocessor}{#include <\hyperlink{mfe_8h}{ViennaRNA/mfe.h}>}
+00024 
+00048 \textcolor{keywordtype}{float}
+00049 \hyperlink{group__local__mfe__fold_ga4918cce52bf69c1913cda503b2ac75d8}{vrna\_Lfold}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\textcolor{keywordtype}{string},
+00050            \textcolor{keywordtype}{int}        window\_size,
+00051            FILE       *file);
+00052 
+00053 
+00054 \textcolor{keywordtype}{float}
+00055 vrna\_Lfold\_cb(\textcolor{keyword}{const} \textcolor{keywordtype}{char}                *\textcolor{keywordtype}{string},
+00056               \textcolor{keywordtype}{int}                       window\_size,
+00057               \hyperlink{group__mfe__fold_ga4f3e5bc214ef803074ace313cb9571b4}{vrna\_mfe\_window\_callback}  *cb,
+00058               \textcolor{keywordtype}{void}                      *data);
+00059 
+00060 
+00061 \textcolor{preprocessor}{#ifdef VRNA\_WITH\_SVM}
+00062 
+00089 \textcolor{keywordtype}{float}
+00090 \hyperlink{group__local__mfe__fold_ga27fddda5fc63eb49c861e38845fc34b4}{vrna\_Lfoldz}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}  *\textcolor{keywordtype}{string},
+00091             \textcolor{keywordtype}{int}         window\_size,
+00092             \textcolor{keywordtype}{double}      min\_z,
+00093             FILE        *file);
+00094 
+00095 
+00096 \textcolor{keywordtype}{float}
+00097 vrna\_Lfoldz\_cb(\textcolor{keyword}{const} \textcolor{keywordtype}{char}                       *\textcolor{keywordtype}{string},
+00098                \textcolor{keywordtype}{int}                              window\_size,
+00099                \textcolor{keywordtype}{double}                           min\_z,
+00100                vrna\_mfe\_window\_zscore\_callback  *cb,
+00101                \textcolor{keywordtype}{void}                             *data);
+00102 
+00103 
+00104 \textcolor{preprocessor}{#endif}
+00105 
+00106 
+00114 \textcolor{keywordtype}{float} vrna\_aliLfold(\textcolor{keyword}{const} \textcolor{keywordtype}{char}  **AS,
+00115                     \textcolor{keywordtype}{int}         maxdist,
+00116                     FILE        *fp);
+00117 
+00118 
+00119 \textcolor{keywordtype}{float} vrna\_aliLfold\_cb(\textcolor{keyword}{const} \textcolor{keywordtype}{char}               **AS,
+00120                        \textcolor{keywordtype}{int}                      maxdist,
+00121                        \hyperlink{group__mfe__fold_ga4f3e5bc214ef803074ace313cb9571b4}{vrna\_mfe\_window\_callback} *cb,
+00122                        \textcolor{keywordtype}{void}                     *data);
+00123 
+00124 
+00125 \textcolor{preprocessor}{#ifdef  VRNA\_BACKWARD\_COMPAT}
+00126 
+00137 DEPRECATED(\textcolor{keywordtype}{float} \hyperlink{group__local__mfe__fold_ga16e5a70e60835bb969eaecbe6482f1be}{Lfold}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *\textcolor{keywordtype}{string},
+00138                        \textcolor{keywordtype}{char}       *structure,
+00139                        \textcolor{keywordtype}{int}        maxdist));
+00140 
+00148 DEPRECATED(\textcolor{keywordtype}{float} \hyperlink{group__local__mfe__fold_gab6d79eecc180f586679f7b85cce5cbe9}{Lfoldz}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}  *\textcolor{keywordtype}{string},
+00149                         \textcolor{keywordtype}{char}        *structure,
+00150                         \textcolor{keywordtype}{int}         maxdist,
+00151                         \textcolor{keywordtype}{int}         zsc,
+00152                         \textcolor{keywordtype}{double}      min\_z));
+00153 
+00164 \textcolor{keywordtype}{float} \hyperlink{group__local__consensus__fold_ga864db0f9c428356d978ad0600aa9a8bc}{aliLfold}(\textcolor{keyword}{const} \textcolor{keywordtype}{char} **AS,
+00165                \textcolor{keywordtype}{char}       *structure,
+00166                \textcolor{keywordtype}{int}        maxdist);
+00167 
+00168 
+00169 \textcolor{keywordtype}{float} aliLfold\_cb(\textcolor{keyword}{const} \textcolor{keywordtype}{char}                **AS,
+00170                   \textcolor{keywordtype}{int}                       maxdist,
+00171                   \hyperlink{group__mfe__fold_ga4f3e5bc214ef803074ace313cb9571b4}{vrna\_mfe\_window\_callback}  *cb,
+00172                   \textcolor{keywordtype}{void}                      *data);
+00173 
+00174 
+00175 \textcolor{preprocessor}{#endif}
+00176 
+00177 \textcolor{preprocessor}{#endif}
+\end{DoxyCode}

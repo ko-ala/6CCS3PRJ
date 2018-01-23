@@ -1,0 +1,70 @@
+\hypertarget{rna_structure_notations_secondary-structure-notations}{}\section{Common Notations for R\+N\+A secondary structures}\label{rna_structure_notations_secondary-structure-notations}
+\hypertarget{rna_structure_notations_dot-bracket-notation}{}\subsection{Dot-\/\+Bracket Notation (a.\+k.\+a. Dot-\/\+Parenthesis Notation)}\label{rna_structure_notations_dot-bracket-notation}
+The Dot-\/\+Bracket notation as introduced already in the early times of the Vienna\+R\+NA Package denotes base pairs by matching pairs of parenthesis {\ttfamily ()} and unpaired nucleotides by dots {\ttfamily .}.
+
+Example\+: A simple helix of size 4 enclosing a hairpin of size 4 is annotated as \begin{DoxyVerb}((((....))))
+\end{DoxyVerb}
+
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__struct__utils_gac76c9ef3de507748fb0416a59323362b}{vrna\+\_\+ptable\+\_\+from\+\_\+string()}, \hyperlink{group__struct__utils_gae966b9f44168a4f4b39ca42ffb5f37b7}{vrna\+\_\+db\+\_\+flatten()}, \hyperlink{group__struct__utils_ga690425199c8b71545e7196e3af1436f8}{vrna\+\_\+db\+\_\+flatten\+\_\+to()}
+\end{DoxySeeAlso}
+\hypertarget{rna_structure_notations_dot-bracket-ext-notation}{}\subsection{Extended Dot-\/\+Bracket Notation}\label{rna_structure_notations_dot-bracket-ext-notation}
+A more generalized version of the original Dot-\/\+Bracket notation may use additional pairs of brackets, such as {\ttfamily $<$$>$}, {\ttfamily \{\}}, and {\ttfamily \mbox{[}\mbox{]}}, and matching pairs of uppercase/lowercase letters. This allows for anotating pseudo-\/knots, since different pairs of brackets are not required to be nested.
+
+Example\+: The follwing annotations of a simple structure with two crossing helices of size 4 are equivalent\+: \begin{DoxyVerb}<<<<[[[[....>>>>]]]]
+((((AAAA....))))aaaa
+AAAA{{{{....aaaa}}}}
+\end{DoxyVerb}
+
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__struct__utils_gac76c9ef3de507748fb0416a59323362b}{vrna\+\_\+ptable\+\_\+from\+\_\+string()}, \hyperlink{group__struct__utils_gae966b9f44168a4f4b39ca42ffb5f37b7}{vrna\+\_\+db\+\_\+flatten()}, \hyperlink{group__struct__utils_ga690425199c8b71545e7196e3af1436f8}{vrna\+\_\+db\+\_\+flatten\+\_\+to()}
+\end{DoxySeeAlso}
+\hypertarget{rna_structure_notations_wuss-notation}{}\subsection{Washington University Secondary Structure (\+W\+U\+S\+S) notation}\label{rna_structure_notations_wuss-notation}
+The W\+U\+SS notation, as frequently used for consensus secondary structures in \hyperlink{file_formats_msa-formats-stockholm}{Stockholm 1.\+0 format} allows for a fine-\/grained annotation of base pairs and unpaired nucleotides, including pseudo-\/knots.
+
+Below, you\textquotesingle{}ll find a list of secondary structure elements and their corresponding W\+U\+SS annotation (See also the infernal user guide at \href{http://eddylab.org/infernal/Userguide.pdf}{\tt http\+://eddylab.\+org/infernal/\+Userguide.\+pdf})
+
+
+\begin{DoxyItemize}
+\item {\bfseries Base pairs}
+
+Nested base pairs are annotated by matching pairs of the symbols {\ttfamily $<$$>$}, {\ttfamily ()}, {\ttfamily \{\}}, and {\ttfamily \mbox{[}\mbox{]}}. Each of the matching pairs of parenthesis have their special meaning, however, when used as input in our programs, e.\+g. structure constraint, these details are usually ignored. Furthermore, base pairs that constitute as pseudo-\/knot are denoted by letters from the latin alphabet and are, if not denoted otherwise, ignored entirely in our programs.
+\item {\bfseries Hairpin loops}
+
+Unpaired nucleotides that constitute the hairpin loop are indicated by underscores, {\ttfamily \+\_\+}.
+
+Example\+: {\ttfamily $<$$<$$<$$<$$<$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$>$$>$$>$$>$$>$}
+\item {\bfseries Bulges and interior loops}
+
+Residues that constitute a bulge or interior loop are denoted by dashes, {\ttfamily -\/}.
+
+Example\+: {\ttfamily (((--$<$$<$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$>$$>$-\/)))}
+\item {\bfseries Multibranch loops}
+
+Unpaired nucleotides in multibranch loops are indicated by commas {\ttfamily ,}.
+
+Example\+: {\ttfamily (((,,$<$$<$\+\_\+\+\_\+\+\_\+\+\_\+\+\_\+$>$$>$,$<$$<$\+\_\+\+\_\+\+\_\+\+\_\+$>$$>$)))}
+\item {\bfseries External residues}
+
+Single stranded nucleotides in the exterior loop, i.\+e. not enclosed by any other pair are denoted by colons, {\ttfamily \+:}.
+
+Example\+: {\ttfamily $<$$<$$<$\+\_\+\+\_\+\+\_\+\+\_\+$>$$>$$>$\+:\+:\+:}
+\item {\bfseries Insertions}
+
+In cases where an alignment represents the consensus with a known structure, insertions relative to the known structure are denoted by periods, {\ttfamily .}. Regions where local structural alignment was invoked, leaving regions of both target and query sequence unaligned, are indicated by tildes, {\ttfamily $\sim$}. \begin{DoxyNote}{Note}
+These symbols only appear in alignments of a known (query) structure annotation to a target sequence of unknown structure.
+\end{DoxyNote}
+
+\item {\bfseries Pseudo-\/knots}
+
+The W\+U\+SS notation allows for annotation of pseudo-\/knots using pairs of upper-\/case/lower-\/case letters. \begin{DoxyNote}{Note}
+Our programs and library functions usually ignore pseudo-\/knots entirely treating them as unpaired nucleotides, if not stated otherwise.
+\end{DoxyNote}
+Example\+: {\ttfamily $<$$<$$<$\+\_\+\+A\+A\+A\+\_\+\+\_\+\+\_\+$>$$>$$>$aaa} 
+\end{DoxyItemize}
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__struct__utils_ga02ca70cffb2d864f7b2d95d92218bae0}{vrna\+\_\+db\+\_\+from\+\_\+\+W\+U\+S\+S()} 
+\end{DoxySeeAlso}

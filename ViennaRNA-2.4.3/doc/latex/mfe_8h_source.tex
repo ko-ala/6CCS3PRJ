@@ -1,0 +1,69 @@
+\hypertarget{mfe_8h_source}{}\section{mfe.\+h}
+\label{mfe_8h_source}\index{Vienna\+R\+N\+A/mfe.\+h@{Vienna\+R\+N\+A/mfe.\+h}}
+
+\begin{DoxyCode}
+00001 \textcolor{preprocessor}{#ifndef VIENNA\_RNA\_PACKAGE\_MFE\_H}
+00002 \textcolor{preprocessor}{#define VIENNA\_RNA\_PACKAGE\_MFE\_H}
+00003 
+00004 \textcolor{preprocessor}{#include <stdio.h>}
+00005 \textcolor{preprocessor}{#include <\hyperlink{data__structures_8h}{ViennaRNA/data\_structures.h}>}
+00006 
+00007 
+\Hypertarget{mfe_8h_source_l00025}\hyperlink{group__mfe__fold_ga4f3e5bc214ef803074ace313cb9571b4}{00025} \textcolor{keyword}{typedef} void (\hyperlink{group__mfe__fold_ga4f3e5bc214ef803074ace313cb9571b4}{vrna\_mfe\_window\_callback})(\textcolor{keywordtype}{int}         start,
+00026                                         \textcolor{keywordtype}{int}         end,
+00027                                         \textcolor{keyword}{const} \textcolor{keywordtype}{char}  *structure,
+00028                                         \textcolor{keywordtype}{float}       en,
+00029                                         \textcolor{keywordtype}{void}        *data);
+00030 
+00031 
+00032 \textcolor{preprocessor}{#ifdef VRNA\_WITH\_SVM}
+00033 \textcolor{keyword}{typedef} void (vrna\_mfe\_window\_zscore\_callback)(\textcolor{keywordtype}{int}        start,
+00034                                                \textcolor{keywordtype}{int}        end,
+00035                                                \textcolor{keyword}{const} \textcolor{keywordtype}{char} *structure,
+00036                                                \textcolor{keywordtype}{float}      en,
+00037                                                \textcolor{keywordtype}{float}      zscore,
+00038                                                \textcolor{keywordtype}{void}       *data);
+00039 \textcolor{preprocessor}{#endif}
+00040 
+00068 \textcolor{keywordtype}{float}
+00069 \hyperlink{group__mfe__fold_gabd3b147371ccf25c577f88bbbaf159fd}{vrna\_mfe}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t} *vc,
+00070          \textcolor{keywordtype}{char}                 *structure);
+00071 
+00072 
+00084 \textcolor{keywordtype}{float} \hyperlink{group__mfe__cofold_gaab22d10c1190f205f16a77cab9d5d3ee}{vrna\_mfe\_dimer}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t} *vc,
+00085                      \textcolor{keywordtype}{char}                 *structure);
+00086 
+00087 
+00115 \textcolor{keywordtype}{float} \hyperlink{group__local__mfe__fold_ga689df235a1915a1ad56e377383c044ce}{vrna\_mfe\_window}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t}  *vc,
+00116                       FILE                  *file);
+00117 
+00118 
+00119 \textcolor{keywordtype}{float} vrna\_mfe\_window\_cb(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t}     *vc,
+00120                          \hyperlink{group__mfe__fold_ga4f3e5bc214ef803074ace313cb9571b4}{vrna\_mfe\_window\_callback} *cb,
+00121                          \textcolor{keywordtype}{void}                     *data);
+00122 
+00123 
+00124 \textcolor{preprocessor}{#ifdef VRNA\_WITH\_SVM}
+00125 
+00152 \textcolor{keywordtype}{float} \hyperlink{group__local__mfe__fold_gaa4f67ae94efd08d800c17f9b53423fd6}{vrna\_mfe\_window\_zscore}(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t} *vc,
+00153                              \textcolor{keywordtype}{double}               min\_z,
+00154                              FILE                 *file);
+00155 
+00156 
+00157 \textcolor{keywordtype}{float} vrna\_mfe\_window\_zscore\_cb(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t}            *vc,
+00158                                 \textcolor{keywordtype}{double}                          min\_z,
+00159                                 vrna\_mfe\_window\_zscore\_callback *cb,
+00160                                 \textcolor{keywordtype}{void}                            *data);
+00161 
+00162 
+00163 \textcolor{preprocessor}{#endif}
+00164 
+00165 \textcolor{keywordtype}{void}
+00166 vrna\_backtrack\_from\_intervals(\hyperlink{group__fold__compound_structvrna__fc__s}{vrna\_fold\_compound\_t}  *vc,
+00167                               \hyperlink{group__data__structures_structvrna__bp__stack__s}{vrna\_bp\_stack\_t}       *bp\_stack,
+00168                               \hyperlink{group__data__structures_structvrna__sect__s}{sect}                  bt\_stack[],
+00169                               \textcolor{keywordtype}{int}                   s);
+00170 
+00171 
+00172 \textcolor{preprocessor}{#endif}
+\end{DoxyCode}
