@@ -75,17 +75,24 @@ class DynamicFrame(Frame):
 
     def callback( self ):
         print "callback"
+
         if self.type == "rbp":
             print "callback rbp"
-            database.searchByProtein(str(self.stringVar.get()))
+            self.options = database.searchProteinList(str(self.stringVar.get()))
         else:
             print "callback rna"
-            database.searchByRNA(str(self.stringVar.get()))
+            self.options = database.searchRNAList(str(self.stringVar.get()))
 
+        self.options = list(set(self.options))
+        self.comboBox['values'] = self.options
+        self.comboBox.current(0)
 
     def tempSearchCommand( self ):
-        #tkMessageBox.showinfo( "Test" , "Works")
         print "tempSearch"
+
+        results = database.searchByProtein(self.comboBox.get())
+
+        print results
 
     #TODO labeleframe and grid
 
