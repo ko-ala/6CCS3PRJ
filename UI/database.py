@@ -103,9 +103,10 @@ def searchByProtein(query):
 
     connect = sqlite3.connect('test.db')
     #search this up. need all 12 fields. not just one
+    connect.text_factory = str
     #connect.row_factory = lambda cursor, row: row[12]
     cursor = connect.cursor()
-    query = "'" + query + "'"
+    query = "'" + query + "%'"
 
     print "query"
     print query
