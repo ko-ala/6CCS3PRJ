@@ -14,8 +14,8 @@ class GUI:
         self.master = master
         self.rnaSearch = None
         self.rbpSearch = None
-        self.search3 = None
-        self.search4 = None
+        self.speciesSearch = None
+        self.expTypeSearch = None
         self.results = StringVar()
 
         master.title( "RNA RBP Database" )
@@ -29,14 +29,21 @@ class GUI:
         #create frame
         searchFrame = LabelFrame( root , text="Search" , padx=5 , pady=5 )
 
-        self.rnaSearch = DynamicSearchFrame( "Filter By RNA", searchFrame, "rna")
-        self.rnaSearch.grid( row = 0, column = 0 )
+        self.rnaSearch = DynamicSearchFrame( "Filter By RNA Sequence", searchFrame, "rna")
+        self.rnaSearch.grid( row = 0 , column = 0 )
 
         self.rbpSearch = DynamicSearchFrame( "Filter By RBP", searchFrame, "rbp")
-        self.rbpSearch.grid( row = 0, column = 1)
+        self.rbpSearch.grid( row = 0 , column = 1 )
+
+        self.speciesSearch = DynamicSearchFrame( "Filter By Spieces" , searchFrame, "species" )
+        self.speciesSearch.grid( row = 2 , column = 0 )
+
+        self.expTypeSearch = DynamicSearchFrame( "Filter By Experiment Type" , searchFrame, "expType" )
+        self.expTypeSearch.grid( row = 2, column = 1 )
 
         self.searchButton = Tkinter.Button( searchFrame, text = "Search" , height = 3, command = self.tempSearchCommand )
-        self.searchButton.grid(row = 1, column = 0, columnspan = 2, sticky = W+E+N+S)
+        self.searchButton.grid(row = 4, column = 0, columnspan = 3, sticky = W+E+N+S)
+
         searchFrame.grid( row = 0, column = 0)
 
     def setResultsFrame( self , root ):
@@ -60,13 +67,22 @@ class DynamicSearchFrame(LabelFrame):
 
     def setDynamicSearch( self , root ):
 
-        self.filter = Entry(self, textvariable = self.query, bd = 2)
+        self.filter = Entry( self , textvariable = self.query , bd = 2 )
         self.filter.bind('<KeyRelease>', self.onKeyRelease)
-        self.filter.grid(row = 0, column = 0, padx = 5, pady = 5)
+        self.filter.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = W+E+N+S)
+
 
         self.list = Listbox(self)
         self.list.bind('<<ListboxSelect>>', self.onListBoxSelect)
         self.list.grid( row = 1, column = 0, columnspan = 5, padx = 5, pady = 5)
+
+        scrollbar = Scrollbar( self )
+        scrollbar.grid( row = 1 , column = 1)
+        self.list.config( yscrollcommand = scrollbar.set )
+        scrollbar.config( command = self.list.yview )
+
+        self.getData( "" )
+
 
     def updateListBox( self , data ):
         self.list.delete( 0 , 'end' )
@@ -82,16 +98,29 @@ class DynamicSearchFrame(LabelFrame):
 
         query = event.widget.get()
 
+        self.getData( query )
+
+    def getData( self, query ):
+
         if self.type == "rbp":
             print "callback rbp"
             self.updateListBox(database.searchProteinList(str(query)))
-        else:
+        elif self.type == "rna":
             print "callback rna"
             self.updateListBox(database.searchRNAList(str(query)))
+        elif self.type == "species":
+            print "callback species"
+            self.updateListBox(database.searchSpeciesList(str(query)))
+        else:
+            print "callback exptype"
+            self.updateListBox(database.searchExpTypeList(str(query)))
 
     def onListBoxSelect( self , event ):
         print "onListBoxSelect"
         self.query = event.widget.get( event.widget.curselection())
+
+        if self.query == "Any":
+            self.query = ''
 
         print self.query
 

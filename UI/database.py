@@ -63,19 +63,64 @@ def searchRNAList(query):
     connect.row_factory = lambda cursor, row: row[0]
     cursor = connect.cursor()
 
-    query = "'" + query + "'"
+    query = "'" + query + "%'"
 
     cursor.execute("""
-                    SELECT *
-                    FROM experiments as expe
-                    INNER JOIN protExp as protExp on expe.expID = protExp.expID
-                    INNER JOIN proteins as prot on protExp.protID = prot.ID
-                    WHERE expe.flag != 1 AND prot.flag != 1 AND expe.expID = """ + query +";")
+                    SELECT experiments.sequence_motif
+                    FROM experiments
+                    INNER JOIN protExp on experiments.expID = protExp.expID
+                    INNER JOIN proteins on protExp.protID = proteins.ID
+                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+                    experiments.sequence_motif != "\N" AND
+                    experiments.sequence_motif != "" AND
+                    experiments.sequence_motif LIKE """ + query +";")
 
     rows = cursor.fetchall()
-    print len(rows)
-    for row in rows:
-        print row
+
+    return rows
+
+def searchSpeciesList(query):
+    print "searchBySpecies"
+
+    connect = sqlite3.connect('test.db')
+    connect.row_factory = lambda cursor, row: row[0]
+    cursor = connect.cursor()
+
+    query = "'" + query + "%'"
+
+    cursor.execute("""
+                    SELECT proteins.species
+                    FROM experiments
+                    INNER JOIN protExp on experiments.expID = protExp.expID
+                    INNER JOIN proteins on protExp.protID = proteins.ID
+                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+                    experiments.sequence_motif != "\N" AND
+                    experiments.sequence_motif != "" AND
+                    proteins.species LIKE """ + query +";")
+
+    rows = cursor.fetchall()
+
+    return rows
+def searchExpTypeList(query):
+    print "searchBySpecies"
+
+    connect = sqlite3.connect('test.db')
+    connect.row_factory = lambda cursor, row: row[0]
+    cursor = connect.cursor()
+
+    query = "'" + query + "%'"
+
+    cursor.execute("""
+                    SELECT experiments.exptype
+                    FROM experiments
+                    INNER JOIN protExp on experiments.expID = protExp.expID
+                    INNER JOIN proteins on protExp.protID = proteins.ID
+                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+                    experiments.sequence_motif != "\N" AND
+                    experiments.sequence_motif != "" AND
+                    experiments.exptype LIKE """ + query +";")
+
+    rows = cursor.fetchall()
 
     return rows
 
@@ -94,7 +139,10 @@ def searchProteinList(query):
                     FROM experiments
                     INNER JOIN protExp on experiments.expID = protExp.expID
                     INNER JOIN proteins on protExp.protID = proteins.ID
-                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND proteins.geneName LIKE """ + query + ";")
+                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+                    experiments.sequence_motif != "\N" AND
+                    experiments.sequence_motif != "" AND
+                    proteins.geneName LIKE """ + query + ";")
 
     rows = cursor.fetchall()
     return rows
@@ -102,9 +150,7 @@ def searchProteinList(query):
 def searchByProtein(query):
 
     connect = sqlite3.connect('test.db')
-    #search this up. need all 12 fields. not just one
     connect.text_factory = str
-    #connect.row_factory = lambda cursor, row: row[12]
     cursor = connect.cursor()
     query = "'" + query + "%'"
 
@@ -112,7 +158,11 @@ def searchByProtein(query):
     print query
 
     cursor.execute("""
-                    SELECT experiments.pubmedID, experiments.exptype, experiments.notes, experiments.sequence_motif, experiments.secondary_structure, proteins.annotID, proteins.geneName, proteins.geneDesc, proteins.species, proteins.domains, proteins.aliases, proteins.PDBIDs, proteins.uniProtIDs
+                    SELECT experiments.pubmedID, experiments.exptype, experiments.notes,
+                    experiments.sequence_motif, experiments.secondary_structure,
+                    proteins.annotID, proteins.geneName, proteins.geneDesc,
+                    proteins.species, proteins.domains, proteins.aliases,
+                    proteins.PDBIDs, proteins.uniProtIDs
                     FROM experiments
                     INNER JOIN protExp on experiments.expID = protExp.expID
                     INNER JOIN proteins on protExp.protID = proteins.ID
@@ -178,7 +228,3 @@ print "hello world"
 
 if not created:
     createDB()
-
-#get_posts()
-
-#search("1", "experiments")
