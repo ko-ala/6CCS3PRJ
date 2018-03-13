@@ -172,6 +172,38 @@ def searchByProtein(query):
     print len(rows)
     return rows
 
+def searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery ):
+    print "searchData"
+
+    connect = sqlite3.connect('test.db')
+    connect.text_factory = str
+    cursor = connect.cursor()
+    rnaQuery = "'" + rnaQuery + "%'"
+    rbpQuery = "'" + rbpQuery + "%'"
+    speciesQuery = "'" + speciesQuery + "%'"
+    expTypeQuery = "'" + expTypeQuery + "%'"
+
+    cursor.execute("""
+                    SELECT experiments.pubmedID, experiments.exptype, experiments.notes,
+                    experiments.sequence_motif, experiments.secondary_structure,
+                    proteins.annotID, proteins.geneName, proteins.geneDesc,
+                    proteins.species, proteins.domains, proteins.aliases,
+                    proteins.PDBIDs, proteins.uniProtIDs
+                    FROM experiments
+                    INNER JOIN protExp on experiments.expID = protExp.expID
+                    INNER JOIN proteins on protExp.protID = proteins.ID
+                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+                    experiments.sequence_motif LIKE """ + rnaQuery +
+                    " AND proteins.geneName LIKE " + rbpQuery +
+                    " AND proteins.species LIKE " + speciesQuery +
+                    "AND experiments.expType LIKE " + expTypeQuery + ";")
+
+    rows = cursor.fetchall()
+    print len(rows)
+    return rows
+
+
+
 
 def search(query, type):
     #print "Searching"
