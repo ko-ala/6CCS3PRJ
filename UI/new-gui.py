@@ -14,6 +14,7 @@ class GUI:
         self.master = master
         self.searchFrame = None
         self.resultsFrame = None
+        self.resultsCanvas = None
         self.rnaSearch = None
         self.rbpSearch = None
         self.speciesSearch = None
@@ -49,16 +50,18 @@ class GUI:
         self.searchFrame.grid( row = 0, column = 0)
 
     def setResultsFrame( self , root ):
-        self.resultsFrame = LabelFrame( root , text = "Results" , padx=5, pady=5)
-        self.resultsFrame.grid( row = 0 , column = 1 , sticky = N )
+
+        self.resultsCanvas = Canvas( root , borderwidth = 0 )
+        self.resultsCanvas.grid( row = 0 , column = 1 , sticky = N )
+
+        self.resultsFrame = LabelFrame( self.resultsCanvas , text = "Results" , padx=5, pady=5)
+        self.resultsFrame.grid( row = 0 , column = 0 , sticky = N )
+
+        scrollbar = Scrollbar( self.resultsCanvas , orient = "horizontal" , command = self.resultsCanvas.xview )
+        scrollbar.grid( row = 1 , column = 0 , sticky = S)
+        self.resultsCanvas.config( xscrollcommand = scrollbar.set )
 
         self.setTitle()
-
-        #order of result
-        #pubmedID, exptype, notes, sequence_motif. secondary_structure
-        #annotID, geneName, geneDesc, species, domains, aliases
-        #PDBIDs, uniProtIDs
-
 
     def setTitle( self ):
         print "setTitles"
@@ -76,13 +79,30 @@ class GUI:
 
             self.titleList.append(label)
 
-        #pubmedIDLabel = Label( root , text = "Pubmed ID" )
-        #pubmedIDLabel.bind( "<Button-1>" , self.sortByColumn( 0 ) )
-        #pubmedIDLabel.grid( row = 0 , column = 0 , padx = 5 , pady = 5 , sticky = W+E+N+S )
-        #pubmedIDLabel.pack()
-
     def sortByColumn( self , index ):
         print "sortByColumn"
+
+        numResult = 0
+        mapOfSort = []
+        listOfItems = []
+
+        for result in self.results:
+            #count = 0
+            #for item in result:
+            #    if count == index:
+            #        mapOfSort.append('end' , )
+            #    count = count + 1
+            mapOfSort.append( ( numResult , result[index] ) )
+
+            numResult = numResult + 1
+
+        print mapOfSort
+
+        mapOfSort.sort(key=lambda tup: tup[1])
+
+        print mapOfSort
+
+        #self.showResults()
 
 
     def tempSearchCommand( self ):
@@ -97,24 +117,44 @@ class GUI:
         self.showResults()
 
     #TODO Make more presentable also lots of data is very slow
+    #paginate to 20?
     def showResults( self ):
         print "showResults"
 
+        numPerPage = 20
+
         sizeOfResult = 13
-        count = 0
+        countItems = 0
+        countResults = 0
         for result in self.results:
             #print result
-            for item in result:
-                #print item
-                label = Label( self.resultsFrame , text = item)
-                label.grid( row = 1 + count/13 , column = count % 13 )
-                count = count + 1
+            if countResults < 20:
+                for item in result:
+                    #print item
+                    label = Label( self.resultsFrame , text = item)
+                    label.grid( row = 1 + countItems/13 , column = countItems % 13 )
+                    countItems = countItems + 1
+                countResults = countResults + 1
 
+        #testing sortByColumn function
+        self.sortByColumn( 3 )
 
-
-
-
-
+        #sizeOfResult = 14
+        #countItems = 0
+        #countResults = 1
+        #for result in self.results:
+            #print result
+        #    if countResults <= 20:
+        #        if countItems % sizeOfResult == 0:
+        #            label = Label( self.resultsFrame , text = countResults)
+        #            label.grid( row = countResults , column = 0 )
+        #        else:
+        #            for item in result:
+                        #print item
+        #                label = Label( self.resultsFrame , text = item)
+        #                label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
+        #        countItems = countItems + 1
+        #    countResults = countResults + 1
 
 class DynamicSearchFrame(LabelFrame):
 
