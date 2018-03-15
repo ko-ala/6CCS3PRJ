@@ -19,6 +19,11 @@ class GUI:
         self.rbpSearch = None
         self.speciesSearch = None
         self.expTypeSearch = None
+        self.sortOptions = None
+        self.titles = [ "Pubmed ID" , "Experiment Type" , "Experiment Notes" ,
+                    "Sequence Motif" , "Secondary Structure" , "Annotation ID" ,
+                    "Gene Name" , "Gene Description" , "Species" , "Domains" ,
+                    "Aliases" , "PDBID" , "UniPritID"]
         self.results = []
 
         master.title( "RNA RBP Database" )
@@ -30,7 +35,8 @@ class GUI:
     #need to search by species or protein name
     def setSearchFrame( self , root ):
         #create frame
-        self.searchFrame = LabelFrame( root , text="Search" , padx=5 , pady=5 )
+        self.searchFrame = LabelFrame( root , text="Search Bar" , padx=5 , pady=5 )
+        self.searchFrame.config( font = ( "Calibri" , 16 ))
 
         self.rnaSearch = DynamicSearchFrame( "Filter By RNA Sequence", self.searchFrame, "rna")
         self.rnaSearch.grid( row = 0 , column = 0 )
@@ -44,19 +50,34 @@ class GUI:
         self.expTypeSearch = DynamicSearchFrame( "Filter By Experiment Type" , self.searchFrame, "expType" )
         self.expTypeSearch.grid( row = 2, column = 1 )
 
-        self.searchButton = Tkinter.Button( self.searchFrame, text = "Search" , height = 3, command = self.tempSearchCommand )
+        self.searchButton = Tkinter.Button( self.searchFrame, text = "Search" , command = self.tempSearchCommand )
         self.searchButton.grid(row = 4, column = 0, columnspan = 3, sticky = W+E+N+S)
+        self.searchButton.config( font = ( "Calibri" , 12 ))
 
         self.searchFrame.grid( row = 0, column = 0)
 
     def setResultsFrame( self , root ):
 
+        #TODO do I need the Canvas?
         self.resultsCanvas = Canvas( root , borderwidth = 0 )
         self.resultsCanvas.grid( row = 0 , column = 1 , sticky = N )
 
-        self.resultsFrame = LabelFrame( self.resultsCanvas , text = "Results" , padx=5, pady=5)
-        self.resultsFrame.grid( row = 0 , column = 0 , sticky = N )
 
+        self.resultsFrame = LabelFrame( self.resultsCanvas , text = "Results" , padx=5, pady=5)
+        self.resultsFrame.config( font = ( "Calibri" , 12 ))
+        self.resultsFrame.grid( row = 1 , column = 0 , sticky = N )
+
+        #TODO Sort results
+
+        """
+        self.sortOptions = ttk.Combobox( self.resultsFrame , textvariable = self.titles)
+        self.sortOptions.config( font = ( "Calibri" , 12 ))
+        self.sortOptions.grid( row = 0 , column = 0 , sticky = N + S + W + E )
+
+        self.sortButton = Tkinter.Button(self.resultsFrame , text = "Sort" , command = self.sortByOption)
+        self.sortButton.config( font = ( "Calibri" , 12 ))
+        self.sortButton.grid( row = 0 , column = 1, sticky = N + S + W + E )
+        """
         scrollbar = Scrollbar( self.resultsCanvas , orient = "horizontal" , command = self.resultsCanvas.xview )
         scrollbar.grid( row = 1 , column = 0 , sticky = S)
         self.resultsCanvas.config( xscrollcommand = scrollbar.set )
@@ -65,19 +86,29 @@ class GUI:
 
     def setTitle( self ):
         print "setTitles"
-        titles = [ "Pubmed ID" , "Experiment Type" , "Experiment Notes" ,
-                    "Sequence Motif" , "Secondary Structure" , "Annotation ID" ,
-                    "Gene Name" , "Gene Description" , "Species" , "Domains" ,
-                    "Aliases" , "PDBID" , "UniPritID"]
 
         self.titleList = []
 
-        for index, title in enumerate(titles):
-            label = Label( self.resultsFrame , text = title , bd = 2 )
-            label.bind( "<Button-1>" , self.sortByColumn( index ) )
-            label.grid( row = 0 , column = index)
+        numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
+        numLabel.grid( row = 0 , column = 0 )
+        numLabel.config( font = ( "Calibri" , 12 ))
+        #numLabel.bind( "<Button-1>" , self.testClick( "does this work" ))
+
+        for index, title in enumerate(self.titles):
+            label = Label( self.resultsFrame , text = title , bd = 10 )
+            label.config( font = ( "Calibri" , 12 ))
+            label.grid( row = 0 , column = index + 1 )
+            #label.bind( "<Button-1>" , self.sortByColumn( index ) )
 
             self.titleList.append(label)
+
+    def testClick( self , index ):
+        print index
+
+    def sortByOption( self ):
+        print "sortByOption"
+
+        option = ""
 
     def sortByColumn( self , index ):
         print "sortByColumn"
@@ -121,8 +152,8 @@ class GUI:
     def showResults( self ):
         print "showResults"
 
-        numPerPage = 20
 
+        """
         sizeOfResult = 13
         countItems = 0
         countResults = 0
@@ -132,29 +163,65 @@ class GUI:
                 for item in result:
                     #print item
                     label = Label( self.resultsFrame , text = item)
+                    label.config( font = ( "Calibri" , 12 ))
                     label.grid( row = 1 + countItems/13 , column = countItems % 13 )
                     countItems = countItems + 1
                 countResults = countResults + 1
-
+        """
         #testing sortByColumn function
-        self.sortByColumn( 3 )
+        #self.sortByColumn( 3 )
+        print len(self.results)
+        numPerPage = 20
+        sizeOfResult = 14
 
-        #sizeOfResult = 14
-        #countItems = 0
-        #countResults = 1
+        if len(self.results) < numPerPage:
+            numPerPage = len(self.results)
+
+        totalItems = sizeOfResult * numPerPage
+        countItems = 0
         #for result in self.results:
-            #print result
-        #    if countResults <= 20:
-        #        if countItems % sizeOfResult == 0:
-        #            label = Label( self.resultsFrame , text = countResults)
-        #            label.grid( row = countResults , column = 0 )
-        #        else:
-        #            for item in result:
-                        #print item
-        #                label = Label( self.resultsFrame , text = item)
-        #                label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
-        #        countItems = countItems + 1
-        #    countResults = countResults + 1
+        while countItems < totalItems:
+            if (countItems % sizeOfResult) == 0:
+                print str((countItems/sizeOfResult) + 1)
+                label = Label( self.resultsFrame , text = str((countItems/sizeOfResult) + 1))
+                label.grid( row = (countItems/sizeOfResult) + 1 , column = 0 )
+                label.config( font = ( "Calibri" , 12 ))
+                countItems = countItems + 1
+            else:
+                for item in self.results[countItems/sizeOfResult]:
+                    #print countItems
+                    label = Label( self.resultsFrame , text = item)
+                    label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
+                    label.config( font = ( "Calibri" , 12 ))
+                    countItems = countItems + 1
+
+
+
+        """
+        for result in self.results:
+            print
+            if countResults <= numPerPage or countResults > len(self.results):
+                countItems = 0
+                while countItems < sizeOfResult:
+                    if countItems % sizeOfResult == 0:
+                        print countItems
+                        label = Label( self.resultsFrame , text = countResults)
+                        label.grid( row = countResults , column = 0 )
+                        countItems = countItems + 1
+                    else:
+                        for item in result:
+                            print countItems
+                            label = Label( self.resultsFrame , text = item)
+                            label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
+                            countItems = countItems + 1
+            countResults = countResults + 1
+        """
+
+
+
+
+
+
 
 class DynamicSearchFrame(LabelFrame):
 
@@ -165,16 +232,20 @@ class DynamicSearchFrame(LabelFrame):
         self.listBox = None
         self.query = ""
 
+        self.config( font = ( "Calibri" , 12 ))
+
         self.setDynamicSearch( self )
 
     def setDynamicSearch( self , root ):
 
         self.filter = Entry( self , textvariable = self.query , bd = 2 )
+        self.filter.config( font = ( "Calibri" , 12 ))
         self.filter.bind( '<KeyRelease>' , self.onKeyRelease )
         self.filter.grid( row = 0 , column = 0 , padx = 5 , pady = 5 , sticky = W+E+N+S )
 
 
         self.listBox = Listbox( self, selectmode = SINGLE )
+        self.listBox.config( font = ( "Calibri" , 12 ))
         self.listBox.bind( '<<ListboxSelect>>' , self.onListBoxSelect )
         self.listBox.grid( row = 1, column = 0, columnspan = 5, padx = 5, pady = 5)
 
