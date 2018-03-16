@@ -11,7 +11,37 @@ def createDB():
     cursor = connect.cursor()
 
     createRBPDB()
+    createPOSTAR()
     #createCISBP()
+
+def createPOSTAR():
+
+    connect = sqlite3.connect('test.db')
+    cursor = connect.cursor()
+
+    cursor.execute("""DROP TABLE IF EXISTS POSTAR""")
+    cursor.execute("""DROP TABLE IF EXISTS POSTAR_SUMMARY""")
+
+    connect.commit()
+
+    cursor.execute("""CREATE TABLE IF NOT EXISTS POSTAR(
+        TargetGeneSymbol, TargetGeneID, TargetGeneType,
+        TargetGeneExpressionLevel, BindingSiteRecords);""")
+
+
+    with open('../DATA/POSTAR.csv', 'rb') as ssPOSTAR:
+        drPOSTAR = csv.DictReader(ssPOSTAR)
+
+        to_POSTAR = [(i['Target gene symbol'], i['Target gene ID'], i['Target gene type'],
+            i['Target gene exp. level'], i['Binding site records']) for i in drPOSTAR]
+
+    cursor.executemany("""
+        INSERT INTO POSTAR(
+        TargetGeneSymbol, TargetGeneID, TargetGeneType,
+        TargetGeneExpressionLevel, BindingSiteRecords)
+        VALUES(?, ?, ?, ?, ?);""", to_POSTAR)
+
+    connect.commit()
 
 def createCISBP():
 
@@ -21,12 +51,14 @@ def createCISBP():
     cursor.execute("DROP TABLE IF EXISTS RBPInfoMotif")
     #cursor.execute("DROP TABLE IF EXISTS RBPInfo")
 
+    connect.commit()
+
     cursor.execute("""CREATE TABLE IF NOT EXISTS RBPInfoMotif(RBPID, FamilyID,
-                    ResourceID, MotifID, MSourceID, DBID1, RBPName, RBPSpecies,
-                    RBPStatus, FamilyName, RBDs, RBDCount, Cutoff, DBID2, MotifType,
-                    MSourceIdentifier, MSourceType, MSourceAuthor, MSourceYear,
-                    PMID, MSource_Version, RBPSourceName, RBPSourceURL, RBPSourceYear,
-                    RBPSourceMonth, RBPSourceDay);""")
+        ResourceID, MotifID, MSourceID, DBID1, RBPName, RBPSpecies,
+        RBPStatus, FamilyName, RBDs, RBDCount, Cutoff, DBID2, MotifType,
+        MSourceIdentifier, MSourceType, MSourceAuthor, MSourceYear,
+        PMID, MSource_Version, RBPSourceName, RBPSourceURL, RBPSourceYear,
+        RBPSourceMonth, RBPSourceDay);""")
     #cursor.execute("""CREATE TABLE IF NOT EXISTS RBPInfo())
 
     with open('../DATA/CISBP_RNA_entiredata/RBP_Information_all_motifs.txt', 'r') as dataFile:
@@ -41,12 +73,12 @@ def createCISBP():
             print "insert size"
             print len(insert)
             cursor.execute("""INSERT INTO RBPInfoMotif(RBPID, FamilyID,
-                            ResourceID, MotifID, MSourceID, DBID1, RBPName, RBPSpecies,
-                            RBPStatus, FamilyName, RBDs, RBDCount, Cutoff, DBID2, MotifType,
-                            MSourceIdentifier, MSourceType, MSourceAuthor, MSourceYear,
-                            PMID, MSource_Version, RBPSourceName, RBPSourceURL, RBPSourceYear,
-                            RBPSourceMonth, RBPSourceDay) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (data))
+                ResourceID, MotifID, MSourceID, DBID1, RBPName, RBPSpecies,
+                RBPStatus, FamilyName, RBDs, RBDCount, Cutoff, DBID2, MotifType,
+                MSourceIdentifier, MSourceType, MSourceAuthor, MSourceYear,
+                PMID, MSource_Version, RBPSourceName, RBPSourceURL, RBPSourceYear,
+                RBPSourceMonth, RBPSourceDay) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (data))
             if 'str' in line:
                 break
     """
@@ -73,31 +105,33 @@ def createRBPDB():
     #create the tables
     cursor.execute("CREATE TABLE IF NOT EXISTS protExp(protID, expID, homolog, ID);")
     cursor.execute("""CREATE TABLE IF NOT EXISTS experiments(expID, pubmedID, exptype,
-                    notes, sequence_motif, secondary_structure, flag, falgNotes);""")
+        notes, sequence_motif, secondary_structure, flag, falgNotes);""")
     cursor.execute("""CREATE TABLE IF NOT EXISTS proteins(ID, annotID, createDate,
-                    updateDate, geneName, geneDesc, species, taxID, domains, flag,
-                    flagNotes, aliases, PDBIDs, uniProtIDs);""")
+        updateDate, geneName, geneDesc, species, taxID, domains, flag, flagNotes,
+        aliases, PDBIDs, uniProtIDs);""")
 
     #import data from csv files
     with open('../DATA/RBPDB/protExp.csv', 'rb') as ssProtExp:
         drProtExp = csv.DictReader(ssProtExp)
         to_protExp = [(i['protID'], i['ID'], i['homolog'], i['expID']) for i in drProtExp]
-    cursor.executemany("INSERT INTO protExp(protID, ID, homolog, expID) VALUES(?, ?, ?, ?);", to_protExp)
+
+    cursor.executemany("""INSERT INTO protExp(protID, ID, homolog, expID)
+        VALUES(?, ?, ?, ?);""", to_protExp)
 
     with open('../DATA/RBPDB/experiments.csv', 'rb') as ssExperiments:
         drExperiments = csv.DictReader(ssExperiments)
         to_experiments = [(i['expID'], i['pubmedID'], i['exptype'], i['notes'],
-                            i['sequence_motif'], i['secondary_structure'],
-                            i['flag'], i['flagNotes']) for i in drExperiments]
+            i['sequence_motif'], i['secondary_structure'], i['flag'], i['flagNotes'])
+            for i in drExperiments]
 
     cursor.executemany("""
-                        INSERT INTO experiments(expID, pubmedID, exptype, notes,
-                        sequence_motif, secondary_structure, flag, falgNotes)
-                        VALUES(?, ?, ?, ?, ?, ?, ?, ?);""", to_experiments)
+        INSERT INTO experiments(expID, pubmedID, exptype, notes, sequence_motif,
+        secondary_structure, flag, falgNotes)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?);""", to_experiments)
 
-    with open('../DATA/RBPDB/proteins.csv', 'rb') as fin:
-        dr = csv.DictReader(fin)
-        to_db = [(i['ID'], i['annotID'], i['createDate'], i['updateDate'], i['geneName'],
+    with open('../DATA/RBPDB/proteins.csv', 'rb') as ssProteins:
+        dr = csv.DictReader(ssProteins)
+        to_proteins = [(i['ID'], i['annotID'], i['createDate'], i['updateDate'], i['geneName'],
                 i['geneDesc'], i['species'], i['taxID'], i['domains'], i['flag'],
                 i['flagNotes'], i['aliases'], i['PDBIDs'], i['uniProtIDs']) for i in dr]
 
@@ -105,7 +139,7 @@ def createRBPDB():
                         INSERT INTO proteins(ID, annotID, createDate, updateDate,
                         geneName, geneDesc, species, taxID, domains, flag, flagNotes,
                         aliases, PDBIDs, uniProtIDs)
-                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""", to_db)
+                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""", to_proteins)
 
     connect.commit()
     connect.close()

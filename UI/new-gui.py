@@ -25,6 +25,7 @@ class GUI:
                     "Gene Name" , "Gene Description" , "Species" , "Domains" ,
                     "Aliases" , "PDBID" , "UniPritID"]
         self.results = []
+        self.resultLabels = []
 
         master.title( "RNA RBP Database" )
 
@@ -149,9 +150,11 @@ class GUI:
 
     #TODO Make more presentable also lots of data is very slow
     #paginate to 20?
+    #TODO need to remake every search?
     def showResults( self ):
         print "showResults"
 
+        del self.resultLabels[:]
 
         """
         sizeOfResult = 13
@@ -170,7 +173,7 @@ class GUI:
         """
         #testing sortByColumn function
         #self.sortByColumn( 3 )
-        print len(self.results)
+        #print len(self.results)
         numPerPage = 20
         sizeOfResult = 14
 
@@ -182,7 +185,7 @@ class GUI:
         #for result in self.results:
         while countItems < totalItems:
             if (countItems % sizeOfResult) == 0:
-                print str((countItems/sizeOfResult) + 1)
+                #print str((countItems/sizeOfResult) + 1)
                 label = Label( self.resultsFrame , text = str((countItems/sizeOfResult) + 1))
                 label.grid( row = (countItems/sizeOfResult) + 1 , column = 0 )
                 label.config( font = ( "Calibri" , 12 ))
@@ -190,7 +193,9 @@ class GUI:
             else:
                 for item in self.results[countItems/sizeOfResult]:
                     #print countItems
+                    print item
                     label = Label( self.resultsFrame , text = item)
+                    self.resultLabels.append(label)
                     label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
                     label.config( font = ( "Calibri" , 12 ))
                     countItems = countItems + 1
