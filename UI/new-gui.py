@@ -217,17 +217,12 @@ class GUI:
             countResults = countResults + 1
         """
 
-
-
-
-
-
-
 class DynamicSearchFrame(LabelFrame):
 
     def __init__( self , text , master , type ):
         LabelFrame.__init__(self , master , text=text)
         self.type = type
+        self.canvas = None
         self.entry = None
         self.listBox = None
         self.query = ""
@@ -242,7 +237,6 @@ class DynamicSearchFrame(LabelFrame):
         self.filter.config( font = ( "Calibri" , 12 ))
         self.filter.bind( '<KeyRelease>' , self.onKeyRelease )
         self.filter.grid( row = 0 , column = 0 , padx = 5 , pady = 5 , sticky = W+E+N+S )
-
 
         self.listBox = Listbox( self, selectmode = SINGLE )
         self.listBox.config( font = ( "Calibri" , 12 ))

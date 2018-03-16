@@ -10,6 +10,60 @@ def createDB():
     connect = sqlite3.connect('test.db')
     cursor = connect.cursor()
 
+    createRBPDB()
+    #createCISBP()
+
+def createCISBP():
+
+    connect = sqlite3.connect('test.db')
+    cursor = connect.cursor()
+
+    cursor.execute("DROP TABLE IF EXISTS RBPInfoMotif")
+    #cursor.execute("DROP TABLE IF EXISTS RBPInfo")
+
+    cursor.execute("""CREATE TABLE IF NOT EXISTS RBPInfoMotif(RBPID, FamilyID,
+                    ResourceID, MotifID, MSourceID, DBID1, RBPName, RBPSpecies,
+                    RBPStatus, FamilyName, RBDs, RBDCount, Cutoff, DBID2, MotifType,
+                    MSourceIdentifier, MSourceType, MSourceAuthor, MSourceYear,
+                    PMID, MSource_Version, RBPSourceName, RBPSourceURL, RBPSourceYear,
+                    RBPSourceMonth, RBPSourceDay);""")
+    #cursor.execute("""CREATE TABLE IF NOT EXISTS RBPInfo())
+
+    with open('../DATA/CISBP_RNA_entiredata/RBP_Information_all_motifs.txt', 'r') as dataFile:
+        for line in dataFile:
+            data = line.split()
+            print "data size"
+            print len(data)
+            insert = []
+            for item in data:
+                print item
+                insert.append(item)
+            print "insert size"
+            print len(insert)
+            cursor.execute("""INSERT INTO RBPInfoMotif(RBPID, FamilyID,
+                            ResourceID, MotifID, MSourceID, DBID1, RBPName, RBPSpecies,
+                            RBPStatus, FamilyName, RBDs, RBDCount, Cutoff, DBID2, MotifType,
+                            MSourceIdentifier, MSourceType, MSourceAuthor, MSourceYear,
+                            PMID, MSource_Version, RBPSourceName, RBPSourceURL, RBPSourceYear,
+                            RBPSourceMonth, RBPSourceDay) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (data))
+            if 'str' in line:
+                break
+    """
+    try:
+         RBP_Information_all_motifsFile = open('../DATA/CISBP_RNA_entiredata/RBP_Information_all_motifs.txt', 'r')
+    except:
+        print "File not found"
+
+    data = RBP_Information_all_motifsFile.read()
+    data = data.split()
+    """
+
+def createRBPDB():
+
+    connect = sqlite3.connect('test.db')
+    cursor = connect.cursor()
+
     #testing so need to delete tables
     cursor.execute("DROP TABLE IF EXISTS protExp")
     cursor.execute("DROP TABLE IF EXISTS proteins")
