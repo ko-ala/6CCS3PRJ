@@ -33,6 +33,8 @@ class GUI:
         self.setResultsFrame( master )
         #self.results.trace( "w" , lambda name , index , mode , stringVar = self.results: self.showResults() )
 
+    #TODO search by database?
+
     #need to search by species or protein name
     def setSearchFrame( self , root ):
         #create frame
@@ -51,7 +53,7 @@ class GUI:
         self.expTypeSearch = DynamicSearchFrame( "Filter By Experiment Type" , self.searchFrame, "expType" )
         self.expTypeSearch.grid( row = 2, column = 1 )
 
-        self.searchButton = Tkinter.Button( self.searchFrame, text = "Search" , command = self.tempSearchCommand )
+        self.searchButton = Tkinter.Button( self.searchFrame, text = "Search" , command = self.searchCommand )
         self.searchButton.grid(row = 4, column = 0, columnspan = 3, sticky = W+E+N+S)
         self.searchButton.config( font = ( "Calibri" , 12 ))
 
@@ -137,7 +139,7 @@ class GUI:
         #self.showResults()
 
 
-    def tempSearchCommand( self ):
+    def searchCommand( self ):
         print "got results"
         rnaQuery = self.rnaSearch.query
         rbpQuery = self.rbpSearch.query
@@ -154,26 +156,11 @@ class GUI:
     def showResults( self ):
         print "showResults"
 
+        for label in self.resultLabels:
+            label.grid_forget()
+
         del self.resultLabels[:]
 
-        """
-        sizeOfResult = 13
-        countItems = 0
-        countResults = 0
-        for result in self.results:
-            #print result
-            if countResults < 20:
-                for item in result:
-                    #print item
-                    label = Label( self.resultsFrame , text = item)
-                    label.config( font = ( "Calibri" , 12 ))
-                    label.grid( row = 1 + countItems/13 , column = countItems % 13 )
-                    countItems = countItems + 1
-                countResults = countResults + 1
-        """
-        #testing sortByColumn function
-        #self.sortByColumn( 3 )
-        #print len(self.results)
         numPerPage = 20
         sizeOfResult = 14
 
@@ -187,40 +174,20 @@ class GUI:
             if (countItems % sizeOfResult) == 0:
                 #print str((countItems/sizeOfResult) + 1)
                 label = Label( self.resultsFrame , text = str((countItems/sizeOfResult) + 1))
+                self.resultLabels.append(label)
                 label.grid( row = (countItems/sizeOfResult) + 1 , column = 0 )
                 label.config( font = ( "Calibri" , 12 ))
                 countItems = countItems + 1
             else:
                 for item in self.results[countItems/sizeOfResult]:
                     #print countItems
-                    print item
+                    #print item
                     label = Label( self.resultsFrame , text = item)
                     self.resultLabels.append(label)
                     label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
                     label.config( font = ( "Calibri" , 12 ))
                     countItems = countItems + 1
 
-
-
-        """
-        for result in self.results:
-            print
-            if countResults <= numPerPage or countResults > len(self.results):
-                countItems = 0
-                while countItems < sizeOfResult:
-                    if countItems % sizeOfResult == 0:
-                        print countItems
-                        label = Label( self.resultsFrame , text = countResults)
-                        label.grid( row = countResults , column = 0 )
-                        countItems = countItems + 1
-                    else:
-                        for item in result:
-                            print countItems
-                            label = Label( self.resultsFrame , text = item)
-                            label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
-                            countItems = countItems + 1
-            countResults = countResults + 1
-        """
 
 class DynamicSearchFrame(LabelFrame):
 
@@ -292,7 +259,14 @@ class DynamicSearchFrame(LabelFrame):
     def onListBoxSelect( self , event ):
         print "onListBoxSelect"
 
-        self.query = event.widget.get( event.widget.curselection())
+        num = event.widget.curselection()
+        #print num
+        if num == ():
+            num = 0
+        else:
+            num = int(num[0])
+        #print num
+        self.query = event.widget.get( num )
 
         if self.query == "Any":
             self.query = ''

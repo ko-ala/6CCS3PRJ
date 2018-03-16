@@ -28,6 +28,8 @@ def createPOSTAR():
         TargetGeneSymbol, TargetGeneID, TargetGeneType,
         TargetGeneExpressionLevel, BindingSiteRecords);""")
 
+    cursor.execute("""CREATE TABLE IF NOT EXISTS POSTAR_SUMMARY(
+        Factor, Species, Method, DataAccension, PubmedID, BindingSites);""")
 
     with open('../DATA/POSTAR.csv', 'rb') as ssPOSTAR:
         drPOSTAR = csv.DictReader(ssPOSTAR)
@@ -35,11 +37,20 @@ def createPOSTAR():
         to_POSTAR = [(i['Target gene symbol'], i['Target gene ID'], i['Target gene type'],
             i['Target gene exp. level'], i['Binding site records']) for i in drPOSTAR]
 
-    cursor.executemany("""
-        INSERT INTO POSTAR(
+    cursor.executemany("""INSERT INTO POSTAR(
         TargetGeneSymbol, TargetGeneID, TargetGeneType,
         TargetGeneExpressionLevel, BindingSiteRecords)
         VALUES(?, ?, ?, ?, ?);""", to_POSTAR)
+
+    with open('../DATA/Summary.csv', 'rb') as ssPOSTARSummary:
+        drPOSTARSummnary = csv.DictReader(ssPOSTARSummary)
+
+        to_POSTARSummary = [(i["Factor"], i['Species'], i['Method'], i['Data accession'],
+            i['Pubmed ID'], i['Binding sites']) for i in drPOSTARSummnary]
+
+    cursor.executemany("""INSERT INTO POSTAR_SUMMARY(
+        Factor, Species, Method, DataAccension, PubmedID, BindingSites)
+        VALUES(?, ?, ?, ?, ?, ?);""", to_POSTARSummary)
 
     connect.commit()
 
@@ -289,47 +300,6 @@ def searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery ):
     rows = cursor.fetchall()
     print len(rows)
     return rows
-
-
-
-
-def search(query, type):
-    #print "Searching"
-
-    connect = sqlite3.connect('test.db')
-    cursor = connect.cursor()
-
-    #print query
-    query = "'" + query + "'"
-    #print query
-
-    if type == "experiments":
-        #print "experiments"
-
-        cursor.execute("""
-                        SELECT *
-                        FROM experiments as expe
-                        INNER JOIN protExp as protExp on expe.expID = protExp.expID
-                        INNER JOIN proteins as prot on protExp.protID = prot.ID
-                        WHERE expe.flag != 1 AND prot.flag != 1 AND expe.expID = """ + query +";")
-    else:
-        #print "proteins"
-        cursor.execute("""
-                        SELECT *
-                        FROM proteins as prot
-                        INNER JOIN protExp as protExp on prot.ID = protExp.protID
-                        INNER JOIN experiments as expe on protExp.expID = expe.expID
-                        WHERE expe.flag != 1 AND prot.flag != 1 AND prot.ID =""" + query +";")
-    connect.commit()
-    rows = cursor.fetchall()
-
-    #print len(rows)
-    for row in rows:
-        print row
-
-def getList():
-    print "getList"
-
 
 # test function to see if database exists
 def get_posts():
