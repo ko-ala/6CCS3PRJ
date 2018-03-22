@@ -6,6 +6,8 @@ import ttk
 import tkMessageBox
 import database
 
+#TODO visualize both things
+
 #TODO add list of queries to bottom above search button?
 
 class GUI:
@@ -24,6 +26,10 @@ class GUI:
                     "Sequence Motif" , "Secondary Structure" , "Annotation ID" ,
                     "Gene Name" , "Gene Description" , "Species" , "Domains" ,
                     "Aliases" , "PDBID" , "UniPritID"]
+        self.titleList = []
+
+        self.numLabel = None
+
         self.results = []
         self.resultLabels = []
 
@@ -86,27 +92,37 @@ class GUI:
         self.resultsCanvas.config( xscrollcommand = scrollbar.set )
 
         self.setTitle()
+        #self.setTestTitle()
+
+    def setTestTitle( self ):
+        self.numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
+        self.numLabel.grid( row = 0 , column = 0 )
+        self.numLabel.config( font = ( "Calibri" , 12 ))
+        self.numLabel.bind( "<Button-1>" , self.testClick( "does this work" ))
+        self.numLabel.bind( "<Enter>", self.testClick("hovering"))
 
     def setTitle( self ):
         print "setTitles"
 
         self.titleList = []
 
-        numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
-        numLabel.grid( row = 0 , column = 0 )
-        numLabel.config( font = ( "Calibri" , 12 ))
-        #numLabel.bind( "<Button-1>" , self.testClick( "does this work" ))
+        self.numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
+        self.numLabel.grid( row = 0 , column = 0 )
+        self.numLabel.config( font = ( "Calibri" , 12 ))
+        self.numLabel.bind( "<Button-1>" , self.testClick( "does this work" ))
+        self.numLabel.bind( "<Enter>", self.testClick("hovering"))
+
 
         for index, title in enumerate(self.titles):
             label = Label( self.resultsFrame , text = title , bd = 10 )
             label.config( font = ( "Calibri" , 12 ))
             label.grid( row = 0 , column = index + 1 )
-            #label.bind( "<Button-1>" , self.sortByColumn( index ) )
+            label.bind( "<Button-1>" , self.testClick )
 
             self.titleList.append(label)
 
-    def testClick( self , index ):
-        print index
+    def testClick( self , event ):
+        print "hi"
 
     def sortByOption( self ):
         print "sortByOption"
