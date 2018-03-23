@@ -71,35 +71,15 @@ class GUI:
         self.resultsCanvas = Canvas( root , borderwidth = 0 )
         self.resultsCanvas.grid( row = 0 , column = 1 , sticky = N )
 
-
         self.resultsFrame = LabelFrame( self.resultsCanvas , text = "Results" , padx=5, pady=5)
         self.resultsFrame.config( font = ( "Calibri" , 12 ))
         self.resultsFrame.grid( row = 1 , column = 0 , sticky = N )
 
-        #TODO Sort results
-
-        """
-        self.sortOptions = ttk.Combobox( self.resultsFrame , textvariable = self.titles)
-        self.sortOptions.config( font = ( "Calibri" , 12 ))
-        self.sortOptions.grid( row = 0 , column = 0 , sticky = N + S + W + E )
-
-        self.sortButton = Tkinter.Button(self.resultsFrame , text = "Sort" , command = self.sortByOption)
-        self.sortButton.config( font = ( "Calibri" , 12 ))
-        self.sortButton.grid( row = 0 , column = 1, sticky = N + S + W + E )
-        """
         scrollbar = Scrollbar( self.resultsCanvas , orient = "horizontal" , command = self.resultsCanvas.xview )
         scrollbar.grid( row = 1 , column = 0 , sticky = S)
         self.resultsCanvas.config( xscrollcommand = scrollbar.set )
 
         self.setTitle()
-        #self.setTestTitle()
-
-    def setTestTitle( self ):
-        self.numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
-        self.numLabel.grid( row = 0 , column = 0 )
-        self.numLabel.config( font = ( "Calibri" , 12 ))
-        self.numLabel.bind( "<Button-1>" , self.testClick( "does this work" ))
-        self.numLabel.bind( "<Enter>", self.testClick("hovering"))
 
     def setTitle( self ):
         print "setTitles"
@@ -109,38 +89,25 @@ class GUI:
         self.numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
         self.numLabel.grid( row = 0 , column = 0 )
         self.numLabel.config( font = ( "Calibri" , 12 ))
-        #self.numLabel.bind( "<Button-1>" , self.testClick( "does this work" ))
-        #self.numLabel.bind( "<Enter>", self.testClick("hovering"))
-
 
         for index, title in enumerate(self.titles):
             label = Label( self.resultsFrame , text = title , bd = 10 )
             label.config( font = ( "Calibri" , 12 ))
             label.grid( row = 0 , column = index + 1 )
             label.bind( "<Button-1>" , lambda event, arg = index: self.sortByColumn( event , arg ) )
-
+            labelToolTip = CreateToolTip(label,"test")
+            #label.bind( "<Enter>" , lambda event, arg = self.titles[index]: self.showToolTip( event , arg ) )
             self.titleList.append(label)
 
-    def testClick( self , event ):
-        print "hi"
+    def showToolTip( self, event, arg):
+        print arg
 
-    def sortByOption( self ):
-        print "sortByOption"
-
-        option = ""
 
     def sortByColumn( self , event , index ):
         print "sortByColumn"
 
-        numResult = 0
         mapOfSort = list(self.results)
-        listOfItems = list()
-
-        print mapOfSort
-
         mapOfSort.sort(key=lambda tup: tup[index])
-
-        print mapOfSort
 
         self.showResults( mapOfSort )
 
@@ -175,10 +142,8 @@ class GUI:
 
         totalItems = sizeOfResult * numPerPage
         countItems = 0
-        #for result in self.results:
         while countItems < totalItems:
             if (countItems % sizeOfResult) == 0:
-                #print str((countItems/sizeOfResult) + 1)
                 label = Label( self.resultsFrame , text = str((countItems/sizeOfResult) + 1))
                 self.resultLabels.append(label)
                 label.grid( row = (countItems/sizeOfResult) + 1 , column = 0 )
@@ -186,8 +151,6 @@ class GUI:
                 countItems = countItems + 1
             else:
                 for item in data[countItems/sizeOfResult]:
-                    #print countItems
-                    #print item
                     label = Label( self.resultsFrame , text = item)
                     self.resultLabels.append(label)
                     label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
@@ -266,12 +229,12 @@ class DynamicSearchFrame(LabelFrame):
         print "onListBoxSelect"
 
         num = event.widget.curselection()
-        #print num
+
         if num == ():
             num = 0
         else:
             num = int(num[0])
-        #print num
+
         self.query = event.widget.get( num )
 
         if self.query == "Any":
@@ -279,6 +242,60 @@ class DynamicSearchFrame(LabelFrame):
 
         print self.query
 
+
+#copied from https://stackoverflow.com/questions/3221956/how-do-i-display-tooltips-in-tkinter
+class CreateToolTip(object):
+    """
+    create a tooltip for a given widget
+    """
+    def __init__(self, widget, text='widget info'):
+        self.waittime = 500     #miliseconds
+        self.wraplength = 180   #pixels
+        self.widget = widget
+        self.text = text
+        self.widget.bind("<Enter>", self.enter)
+        self.widget.bind("<Leave>", self.leave)
+        self.widget.bind("<ButtonPress>", self.leave)
+        self.id = None
+        self.tw = None
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hidetip()
+
+    def schedule(self):
+        self.unschedule()
+        self.id = self.widget.after(self.waittime, self.showtip)
+
+    def unschedule(self):
+        id = self.id
+        self.id = None
+        if id:
+            self.widget.after_cancel(id)
+
+    def showtip(self, event=None):
+        x = y = 0
+        x, y, cx, cy = self.widget.bbox("insert")
+        x += self.widget.winfo_rootx() + 25
+        y += self.widget.winfo_rooty() + 20
+        # creates a toplevel window
+        self.tw = Tkinter.Toplevel(self.widget)
+        # Leaves only the label and removes the app window
+        self.tw.wm_overrideredirect(True)
+        self.tw.wm_geometry("+%d+%d" % (x, y))
+        label = Tkinter.Label(self.tw, text=self.text, justify='left',
+                       background="#ffffff", relief='solid', borderwidth=1,
+                       wraplength = self.wraplength)
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tw
+        self.tw= None
+        if tw:
+            tw.destroy()
 
 root = Tk()
 gui = GUI(root)
