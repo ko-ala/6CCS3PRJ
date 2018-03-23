@@ -109,15 +109,15 @@ class GUI:
         self.numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
         self.numLabel.grid( row = 0 , column = 0 )
         self.numLabel.config( font = ( "Calibri" , 12 ))
-        self.numLabel.bind( "<Button-1>" , self.testClick( "does this work" ))
-        self.numLabel.bind( "<Enter>", self.testClick("hovering"))
+        #self.numLabel.bind( "<Button-1>" , self.testClick( "does this work" ))
+        #self.numLabel.bind( "<Enter>", self.testClick("hovering"))
 
 
         for index, title in enumerate(self.titles):
             label = Label( self.resultsFrame , text = title , bd = 10 )
             label.config( font = ( "Calibri" , 12 ))
             label.grid( row = 0 , column = index + 1 )
-            label.bind( "<Button-1>" , self.testClick )
+            label.bind( "<Button-1>" , lambda event, arg = index: self.sortByColumn( event , arg ) )
 
             self.titleList.append(label)
 
@@ -129,30 +129,20 @@ class GUI:
 
         option = ""
 
-    def sortByColumn( self , index ):
+    def sortByColumn( self , event , index ):
         print "sortByColumn"
 
         numResult = 0
-        mapOfSort = []
-        listOfItems = []
-
-        for result in self.results:
-            #count = 0
-            #for item in result:
-            #    if count == index:
-            #        mapOfSort.append('end' , )
-            #    count = count + 1
-            mapOfSort.append( ( numResult , result[index] ) )
-
-            numResult = numResult + 1
+        mapOfSort = list(self.results)
+        listOfItems = list()
 
         print mapOfSort
 
-        mapOfSort.sort(key=lambda tup: tup[1])
+        mapOfSort.sort(key=lambda tup: tup[index])
 
         print mapOfSort
 
-        #self.showResults()
+        self.showResults( mapOfSort )
 
 
     def searchCommand( self ):
@@ -164,12 +154,12 @@ class GUI:
 
         self.results = database.searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery )
 
-        self.showResults()
+        self.showResults( self.results )
 
     #TODO Make more presentable also lots of data is very slow
     #paginate to 20?
     #TODO need to remake every search?
-    def showResults( self ):
+    def showResults( self , data ):
         print "showResults"
 
         for label in self.resultLabels:
@@ -180,8 +170,8 @@ class GUI:
         numPerPage = 20
         sizeOfResult = 14
 
-        if len(self.results) < numPerPage:
-            numPerPage = len(self.results)
+        if len(data) < numPerPage:
+            numPerPage = len(data)
 
         totalItems = sizeOfResult * numPerPage
         countItems = 0
@@ -195,7 +185,7 @@ class GUI:
                 label.config( font = ( "Calibri" , 12 ))
                 countItems = countItems + 1
             else:
-                for item in self.results[countItems/sizeOfResult]:
+                for item in data[countItems/sizeOfResult]:
                     #print countItems
                     #print item
                     label = Label( self.resultsFrame , text = item)
