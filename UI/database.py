@@ -11,7 +11,7 @@ def createDB():
     cursor = connect.cursor()
 
     createRBPDB()
-    createPOSTAR()
+    #createPOSTAR()
     #createCISBP()
 
 def createPOSTAR():
@@ -116,7 +116,7 @@ def createRBPDB():
     #create the tables
     cursor.execute("CREATE TABLE IF NOT EXISTS protExp(protID, expID, homolog, ID);")
     cursor.execute("""CREATE TABLE IF NOT EXISTS experiments(expID, pubmedID, exptype,
-        notes, sequence_motif, secondary_structure, flag, falgNotes);""")
+        notes, sequence_motif, flag, falgNotes);""")
     cursor.execute("""CREATE TABLE IF NOT EXISTS proteins(ID, annotID, createDate,
         updateDate, geneName, geneDesc, species, taxID, domains, flag, flagNotes,
         aliases, PDBIDs, uniProtIDs);""")
@@ -132,13 +132,13 @@ def createRBPDB():
     with open('../DATA/RBPDB/experiments.csv', 'rb') as ssExperiments:
         drExperiments = csv.DictReader(ssExperiments)
         to_experiments = [(i['expID'], i['pubmedID'], i['exptype'], i['notes'],
-            i['sequence_motif'], i['secondary_structure'], i['flag'], i['flagNotes'])
+            i['sequence_motif'], i['flag'], i['flagNotes'])
             for i in drExperiments]
 
     cursor.executemany("""
         INSERT INTO experiments(expID, pubmedID, exptype, notes, sequence_motif,
-        secondary_structure, flag, falgNotes)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?);""", to_experiments)
+        flag, falgNotes)
+        VALUES(?, ?, ?, ?, ?, ?, ?);""", to_experiments)
 
     with open('../DATA/RBPDB/proteins.csv', 'rb') as ssProteins:
         dr = csv.DictReader(ssProteins)
@@ -258,10 +258,9 @@ def searchByProtein(query):
 
     cursor.execute("""
                     SELECT experiments.pubmedID, experiments.exptype, experiments.notes,
-                    experiments.sequence_motif, experiments.secondary_structure,
-                    proteins.annotID, proteins.geneName, proteins.geneDesc,
-                    proteins.species, proteins.domains, proteins.aliases,
-                    proteins.PDBIDs, proteins.uniProtIDs
+                    experiments.sequence_motif, proteins.annotID, proteins.geneName,
+                    proteins.geneDesc, proteins.species, proteins.domains,
+                    proteins.aliases, proteins.PDBIDs, proteins.uniProtIDs
                     FROM experiments
                     INNER JOIN protExp on experiments.expID = protExp.expID
                     INNER JOIN proteins on protExp.protID = proteins.ID
@@ -284,10 +283,9 @@ def searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery ):
 
     cursor.execute("""
                     SELECT experiments.pubmedID, experiments.exptype, experiments.notes,
-                    experiments.sequence_motif, experiments.secondary_structure,
-                    proteins.annotID, proteins.geneName, proteins.geneDesc,
-                    proteins.species, proteins.domains, proteins.aliases,
-                    proteins.PDBIDs, proteins.uniProtIDs
+                    experiments.sequence_motif,proteins.annotID, proteins.geneName,
+                    proteins.geneDesc, proteins.species, proteins.domains,
+                    proteins.aliases, proteins.PDBIDs, proteins.uniProtIDs
                     FROM experiments
                     INNER JOIN protExp on experiments.expID = protExp.expID
                     INNER JOIN proteins on protExp.protID = proteins.ID

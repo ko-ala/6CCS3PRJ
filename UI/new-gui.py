@@ -4,6 +4,7 @@ import Tkinter
 from Tkinter import *
 import ttk
 import tkMessageBox
+import webbrowser
 import database
 
 #TODO visualize both things
@@ -23,10 +24,21 @@ class GUI:
         self.expTypeSearch = None
         self.sortOptions = None
         self.titles = [ "Pubmed ID" , "Experiment Type" , "Experiment Notes" ,
-                    "Sequence Motif" , "Secondary Structure" , "Annotation ID" ,
+                    "Sequence Motif" , "Annotation ID" ,
                     "Gene Name" , "Gene Description" , "Species" , "Domains" ,
                     "Aliases" , "PDBID" , "UniPritID"]
+        self.methodDict = {}
+        self.toolTips = []
         self.titleList = []
+        self.pageNum = IntVar()
+        self.totalPages = 0
+        self.numPerPage = 400
+
+        self.back2Button = None
+        self.back1Button = None
+        self.curPageLabel = None
+        self.forward1Button = None
+        self.forward2Button = None
 
         self.numLabel = None
 
@@ -37,11 +49,8 @@ class GUI:
 
         self.setSearchFrame( master )
         self.setResultsFrame( master )
-        #self.results.trace( "w" , lambda name , index , mode , stringVar = self.results: self.showResults() )
 
     #TODO search by database?
-
-    #need to search by species or protein name
     def setSearchFrame( self , root ):
         #create frame
         self.searchFrame = LabelFrame( root , text="Search Bar" , padx=5 , pady=5 )
@@ -63,7 +72,7 @@ class GUI:
         self.searchButton.grid(row = 4, column = 0, columnspan = 3, sticky = W+E+N+S)
         self.searchButton.config( font = ( "Calibri" , 12 ))
 
-        self.searchFrame.grid( row = 0, column = 0)
+        self.searchFrame.grid( row = 0, column = 0 )
 
     def setResultsFrame( self , root ):
 
@@ -79,12 +88,58 @@ class GUI:
         scrollbar.grid( row = 1 , column = 0 , sticky = S)
         self.resultsCanvas.config( xscrollcommand = scrollbar.set )
 
+        self.pageFrame = Frame( self.resultsCanvas )
+        self.pageFrame.grid( row = 2 , column = 0 , sticky = S)
+
+        pageLabel = Label( self.pageFrame , text = "Viewing results " , padx=5, pady=5)
+        pageLabel.grid( row = 0 , column = 0 , sticky = S + W)
+
+        self.back2Button = Tkinter.Button(self.pageFrame , text = "<<" , command = lambda:self.changePage(-2))
+        self.back2Button.grid( row = 0 , column = 1 , sticky = S + W)
+
+        self.back1Button = Tkinter.Button(self.pageFrame , text = "<" , command = lambda:self.changePage(-1))
+        self.back1Button.grid( row = 0 , column = 2 , sticky = S + W)
+
+
+        self.forward1Button = Tkinter.Button(self.pageFrame , text = ">" , command = lambda:self.changePage(1))
+        self.forward1Button.grid( row = 0 , column = 4 , sticky = S + W)
+
+        self.forward2Button = Tkinter.Button(self.pageFrame , text = ">>" , command = lambda:self.changePage(2))
+        self.forward2Button.grid( row = 0 , column = 5 , sticky = S + W)
+
+        self.pageNum.set(0)
+        self.pageNum.trace("w", self.deactivateButton())
+
+        self.curPageLabel = Label(self.pageFrame , textvariable = self.pageNum)
+        self.curPageLabel.grid( row = 0, column = 3, sticky = S + W)
+
         self.setTitle()
+
+    def deactivateButton( self ):
+        print "deactivateButton"
+        if self.pageNum.get() - 2 < 0:
+            self.back2Button.configure(state = 'disabled')
+        if self.pageNum.get() - 1 < 0:
+            self.back1Button.configure(state = 'disabled')
+        if self.pageNum.get() + 1 > self.totalPages:
+            self.forward1Button.configure(state = 'disabled')
+        if self.pageNum.get() + 2 > self.totalPages:
+            self.forward2Button.configure(state = 'disabled')
+
+    def changePage( self , numPages ):
+        print "changePage"
+        print numPages
+        self.pageNum.set(self.pageNum.get() + numPages)
+
+        print self.pageNum.get()
+
+        self.showResults()
 
     def setTitle( self ):
         print "setTitles"
 
         self.titleList = []
+        self.setToolTips()
 
         self.numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
         self.numLabel.grid( row = 0 , column = 0 )
@@ -96,21 +151,15 @@ class GUI:
             label.grid( row = 0 , column = index + 1 )
             label.bind( "<Button-1>" , lambda event, arg = index: self.sortByColumn( event , arg ) )
             labelToolTip = CreateToolTip(label,"test")
-            #label.bind( "<Enter>" , lambda event, arg = self.titles[index]: self.showToolTip( event , arg ) )
             self.titleList.append(label)
 
-    def showToolTip( self, event, arg):
-        print arg
-
+    def setToolTips( self ):
+        print "setToolTips"
 
     def sortByColumn( self , event , index ):
         print "sortByColumn"
-
-        mapOfSort = list(self.results)
-        mapOfSort.sort(key=lambda tup: tup[index])
-
-        self.showResults( mapOfSort )
-
+        self.results.sort(key=lambda tup: tup[index])
+        self.showResults()
 
     def searchCommand( self ):
         print "got results"
@@ -121,26 +170,29 @@ class GUI:
 
         self.results = database.searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery )
 
-        self.showResults( self.results )
+        self.totalPages = len(self.results) / self.numPerPage
+
+        self.showResults()
 
     #TODO Make more presentable also lots of data is very slow
     #paginate to 20?
     #TODO need to remake every search?
-    def showResults( self , data ):
+    def showResults( self ):
         print "showResults"
+
+        startIndex = ( self.pageNum.get() - 1 ) * self.numPerPage
+
+        sizeOfResult = len(self.titles) + 1
 
         for label in self.resultLabels:
             label.grid_forget()
 
         del self.resultLabels[:]
 
-        numPerPage = 20
-        sizeOfResult = 14
+        if (len(self.results)) - startIndex < self.numPerPage:
+            numPerPage = len(self.results)
 
-        if len(data) < numPerPage:
-            numPerPage = len(data)
-
-        totalItems = sizeOfResult * numPerPage
+        totalItems = sizeOfResult * self.numPerPage
         countItems = 0
         while countItems < totalItems:
             if (countItems % sizeOfResult) == 0:
@@ -150,12 +202,34 @@ class GUI:
                 label.config( font = ( "Calibri" , 12 ))
                 countItems = countItems + 1
             else:
-                for item in data[countItems/sizeOfResult]:
+                #TODO add binds
+                for item in self.results[startIndex + (countItems/sizeOfResult)]:
+                #for i in range(startIndex, startIndex + 1):
                     label = Label( self.resultsFrame , text = item)
                     self.resultLabels.append(label)
                     label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
+                    label.bind("<Button-1>", lambda event,
+                        arg = (countItems / sizeOfResult, ( countItems % sizeOfResult ) - 1 ):
+                        self.clickedResult( event , arg ) )
                     label.config( font = ( "Calibri" , 12 ))
                     countItems = countItems + 1
+
+    def clickedResult( self, event, arg):
+        print arg
+        dataSelected = self.results[arg[0]][arg[1]]
+        dataType = self.titles[arg[1]]
+        print dataType
+        print dataSelected
+
+        if dataType == self.titles[0]:
+            self.PubMedIDEvent(dataSelected)
+
+    def PubMedIDEvent( self , pubmedID):
+        url = "https://www.ncbi.nlm.nih.gov/pubmed/" + pubmedID
+        webbrowser.open_new(url)
+
+    def clickExpTypeEvent( self , expType ):
+        print expType
 
 
 class DynamicSearchFrame(LabelFrame):
@@ -173,7 +247,6 @@ class DynamicSearchFrame(LabelFrame):
         self.setDynamicSearch( self )
 
     def setDynamicSearch( self , root ):
-
         self.filter = Entry( self , textvariable = self.query , bd = 2 )
         self.filter.config( font = ( "Calibri" , 12 ))
         self.filter.bind( '<KeyRelease>' , self.onKeyRelease )
@@ -190,7 +263,6 @@ class DynamicSearchFrame(LabelFrame):
         scrollbar.config( command = self.listBox.yview )
 
         self.getData( "" )
-        #self.listBox.select_set(0)
 
 
     def updateListBox( self , data ):
@@ -205,9 +277,7 @@ class DynamicSearchFrame(LabelFrame):
 
     def onKeyRelease( self , event ):
         print "onKeyRelease"
-
         query = event.widget.get()
-
         self.getData( query )
 
     def getData( self, query ):
@@ -239,8 +309,6 @@ class DynamicSearchFrame(LabelFrame):
 
         if self.query == "Any":
             self.query = ''
-
-        print self.query
 
 
 #copied from https://stackoverflow.com/questions/3221956/how-do-i-display-tooltips-in-tkinter
@@ -300,5 +368,3 @@ class CreateToolTip(object):
 root = Tk()
 gui = GUI(root)
 root.mainloop()
-
-#print database.search("1", "experiments")
