@@ -18,6 +18,7 @@ class GUI:
         self.searchFrame = None
         self.resultsFrame = None
         self.resultsCanvas = None
+        self.resultsDisplay = None
         self.rnaSearch = None
         self.rbpSearch = None
         self.speciesSearch = None
@@ -26,13 +27,13 @@ class GUI:
         self.titles = [ "Pubmed ID" , "Experiment Type" , "Experiment Notes" ,
                     "Sequence Motif" , "Annotation ID" ,
                     "Gene Name" , "Gene Description" , "Species" , "Domains" ,
-                    "Aliases" , "PDBID" , "UniPritID"]
+                    "Aliases" , "PDBID" , "UniProtID"]
         self.methodDict = {}
         self.toolTips = []
         self.titleList = []
         self.pageNum = IntVar()
         self.totalPages = 0
-        self.numPerPage = 400
+        self.numPerPage = 20
 
         self.back2Button = None
         self.back1Button = None
@@ -76,19 +77,32 @@ class GUI:
 
     def setResultsFrame( self , root ):
 
-        #TODO do I need the Canvas?
-        self.resultsCanvas = Canvas( root , borderwidth = 0 )
-        self.resultsCanvas.grid( row = 0 , column = 1 , sticky = N )
-
-        self.resultsFrame = LabelFrame( self.resultsCanvas , text = "Results" , padx=5, pady=5)
+        self.resultsFrame = LabelFrame( root , text = "Results" , width = 500)
         self.resultsFrame.config( font = ( "Calibri" , 12 ))
-        self.resultsFrame.grid( row = 1 , column = 0 , sticky = N )
+        self.resultsFrame.grid( row = 0 , column = 1 , sticky = N )
 
-        scrollbar = Scrollbar( self.resultsCanvas , orient = "horizontal" , command = self.resultsCanvas.xview )
-        scrollbar.grid( row = 1 , column = 0 , sticky = S)
-        self.resultsCanvas.config( xscrollcommand = scrollbar.set )
+        self.resultsCanvas = Canvas(self.resultsFrame, width = 500, height = 500)
+        self.resultsCanvas.grid( row = 0 , column = 0, sticky = N+S+E+W)
 
-        self.pageFrame = Frame( self.resultsCanvas )
+        self.resultsDisplay = Frame(self.resultsCanvas)
+        self.resultsDisplay.grid(row =0, column = 0)
+
+        self.xscrollbar = Scrollbar(self.resultsFrame, orient=HORIZONTAL, command=self.resultsCanvas.xview)
+        self.xscrollbar.grid(row = 1, column = 0, sticky = E + W)
+
+        self.yscrollbar = Scrollbar(self.resultsFrame, orient=VERTICAL, command=self.resultsCanvas.yview)
+        self.yscrollbar.grid(row = 0, column = 1, rowspan = 2, sticky = N + S)
+
+        self.resultsCanvas.configure(xscrollcommand=self.xscrollbar.set,
+            yscrollcommand=self.yscrollbar.set,
+            scrollregion = (0,0,500,500))
+        self.resultsCanvas.grid_columnconfigure(0, weight=1)
+        self.resultsCanvas.grid_rowconfigure(0, weight=1)
+
+        self.resultsCanvas.create_window((0,0),window=self.resultsDisplay,anchor='nw')
+        self.resultsDisplay.bind("<Configure>",self.scrollFunction)
+
+        self.pageFrame = Frame( self.resultsFrame )
         self.pageFrame.grid( row = 2 , column = 0 , sticky = S)
 
         pageLabel = Label( self.pageFrame , text = "Viewing results " , padx=5, pady=5)
@@ -100,7 +114,6 @@ class GUI:
         self.back1Button = Tkinter.Button(self.pageFrame , text = "<" , command = lambda:self.changePage(-1))
         self.back1Button.grid( row = 0 , column = 2 , sticky = S + W)
 
-
         self.forward1Button = Tkinter.Button(self.pageFrame , text = ">" , command = lambda:self.changePage(1))
         self.forward1Button.grid( row = 0 , column = 4 , sticky = S + W)
 
@@ -108,23 +121,35 @@ class GUI:
         self.forward2Button.grid( row = 0 , column = 5 , sticky = S + W)
 
         self.pageNum.set(0)
-        self.pageNum.trace("w", self.deactivateButton())
+        self.pageNum.trace("w", self.deactivateButtons())
 
         self.curPageLabel = Label(self.pageFrame , textvariable = self.pageNum)
         self.curPageLabel.grid( row = 0, column = 3, sticky = S + W)
 
         self.setTitle()
 
-    def deactivateButton( self ):
+    def scrollFunction( self, canvas):
+        self.resultsCanvas.configure(scrollregion=self.resultsCanvas.bbox("all"))
+
+    def deactivateButtons( self ):
         print "deactivateButton"
         if self.pageNum.get() - 2 < 0:
             self.back2Button.configure(state = 'disabled')
+        else:
+            self.back2Button.configure(state = 'normal')
+
         if self.pageNum.get() - 1 < 0:
             self.back1Button.configure(state = 'disabled')
+        else:
+            self.back1Button.configure(state = 'normal')
         if self.pageNum.get() + 1 > self.totalPages:
             self.forward1Button.configure(state = 'disabled')
+        else:
+            self.forward1Button.configure(state = 'normal')
         if self.pageNum.get() + 2 > self.totalPages:
             self.forward2Button.configure(state = 'disabled')
+        else:
+            self.forward2Button.configure(state = 'normal')
 
     def changePage( self , numPages ):
         print "changePage"
@@ -141,12 +166,12 @@ class GUI:
         self.titleList = []
         self.setToolTips()
 
-        self.numLabel = Label( self.resultsFrame , text = "No." , bd = 10 )
+        self.numLabel = Label( self.resultsDisplay , text = "No." , bd = 10 )
         self.numLabel.grid( row = 0 , column = 0 )
         self.numLabel.config( font = ( "Calibri" , 12 ))
 
         for index, title in enumerate(self.titles):
-            label = Label( self.resultsFrame , text = title , bd = 10 )
+            label = Label( self.resultsDisplay , text = title , bd = 10 )
             label.config( font = ( "Calibri" , 12 ))
             label.grid( row = 0 , column = index + 1 )
             label.bind( "<Button-1>" , lambda event, arg = index: self.sortByColumn( event , arg ) )
@@ -180,8 +205,8 @@ class GUI:
     def showResults( self ):
         print "showResults"
 
-        startIndex = ( self.pageNum.get() - 1 ) * self.numPerPage
-
+        startIndex = ( self.pageNum.get() ) * self.numPerPage
+        print startIndex
         sizeOfResult = len(self.titles) + 1
 
         for label in self.resultLabels:
@@ -190,13 +215,13 @@ class GUI:
         del self.resultLabels[:]
 
         if (len(self.results)) - startIndex < self.numPerPage:
-            numPerPage = len(self.results)
+            self.numPerPage = len(self.results)
 
         totalItems = sizeOfResult * self.numPerPage
         countItems = 0
         while countItems < totalItems:
             if (countItems % sizeOfResult) == 0:
-                label = Label( self.resultsFrame , text = str((countItems/sizeOfResult) + 1))
+                label = Label( self.resultsDisplay , text = str((countItems/sizeOfResult) + 1))
                 self.resultLabels.append(label)
                 label.grid( row = (countItems/sizeOfResult) + 1 , column = 0 )
                 label.config( font = ( "Calibri" , 12 ))
@@ -205,7 +230,7 @@ class GUI:
                 #TODO add binds
                 for item in self.results[startIndex + (countItems/sizeOfResult)]:
                 #for i in range(startIndex, startIndex + 1):
-                    label = Label( self.resultsFrame , text = item)
+                    label = Label( self.resultsDisplay , text = item)
                     self.resultLabels.append(label)
                     label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
                     label.bind("<Button-1>", lambda event,
@@ -213,6 +238,8 @@ class GUI:
                         self.clickedResult( event , arg ) )
                     label.config( font = ( "Calibri" , 12 ))
                     countItems = countItems + 1
+
+        self.deactivateButtons()
 
     def clickedResult( self, event, arg):
         print arg
@@ -237,7 +264,6 @@ class DynamicSearchFrame(LabelFrame):
     def __init__( self , text , master , type ):
         LabelFrame.__init__(self , master , text=text)
         self.type = type
-        self.canvas = None
         self.entry = None
         self.listBox = None
         self.query = ""
@@ -258,7 +284,7 @@ class DynamicSearchFrame(LabelFrame):
         self.listBox.grid( row = 1, column = 0, columnspan = 5, padx = 5, pady = 5)
 
         scrollbar = Scrollbar( self )
-        scrollbar.grid( row = 1 , column = 1)
+        scrollbar.grid( row = 1 , column = 1, sticky = N+S)
         self.listBox.config( yscrollcommand = scrollbar.set )
         scrollbar.config( command = self.listBox.yview )
 
