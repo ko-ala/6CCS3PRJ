@@ -11,6 +11,8 @@ import database
 
 #TODO add list of queries to bottom above search button?
 
+#TODO tooltips
+
 class GUI:
 
     def __init__( self , master ):
@@ -25,10 +27,9 @@ class GUI:
         self.expTypeSearch = None
         self.sortOptions = None
         self.titles = [ "Pubmed ID" , "Experiment Type" , "Experiment Notes" ,
-                    "Sequence Motif" , "Annotation ID" ,
-                    "Gene Name" , "Gene Description" , "Species" , "Domains" ,
+                    "Sequence Motif" , "Annotation ID" , "Gene Name" ,
+                    "Gene Description" , "Species" , "Domains" ,
                     "Aliases" , "PDBID" , "UniProtID"]
-        #self.methodDict = {"Pubmed ID": }
         self.toolTips = []
         self.titleList = []
         self.pageNum = IntVar()
@@ -81,7 +82,7 @@ class GUI:
         self.resultsFrame.config( font = ( "Calibri" , 12 ))
         self.resultsFrame.grid( row = 0 , column = 1 , sticky = N )
 
-        self.resultsCanvas = Canvas(self.resultsFrame, width = 500, height = 500)
+        self.resultsCanvas = Canvas(self.resultsFrame, width = 1000, height = 1000)
         self.resultsCanvas.grid( row = 0 , column = 0, sticky = N+S+E+W)
 
         self.resultsDisplay = Frame(self.resultsCanvas)
@@ -121,7 +122,9 @@ class GUI:
         self.forward2Button.grid( row = 0 , column = 5 , sticky = S + W)
 
         self.pageNum.set(0)
-        self.pageNum.trace("w", self.deactivateButtons())
+
+        #TODO something strange here, nonetype error
+        self.pageNum.trace("w", self.deactivateButtons)
 
         self.curPageLabel = Label(self.pageFrame , textvariable = self.pageNum)
         self.curPageLabel.grid( row = 0, column = 3, sticky = S + W)
@@ -131,13 +134,12 @@ class GUI:
     def scrollFunction( self, canvas):
         self.resultsCanvas.configure(scrollregion=self.resultsCanvas.bbox("all"))
 
-    def deactivateButtons( self ):
+    def deactivateButtons( self , *args ):
         print "deactivateButton"
         if self.pageNum.get() - 2 < 0:
             self.back2Button.configure(state = 'disabled')
         else:
             self.back2Button.configure(state = 'normal')
-
         if self.pageNum.get() - 1 < 0:
             self.back1Button.configure(state = 'disabled')
         else:
@@ -154,9 +156,12 @@ class GUI:
     def changePage( self , numPages ):
         print "changePage"
         print numPages
-        self.pageNum.set(self.pageNum.get() + numPages)
 
-        print self.pageNum.get()
+        numPages = int(self.pageNum.get()) + numPages
+        #TODO following line causes nonetype error
+        self.pageNum.set(int(numPages))
+
+#        print self.pageNum.get()
 
         self.showResults()
 
@@ -199,14 +204,10 @@ class GUI:
 
         self.showResults()
 
-    #TODO Make more presentable also lots of data is very slow
-    #paginate to 20?
-    #TODO need to remake every search?
     def showResults( self ):
         print "showResults"
 
         startIndex = ( self.pageNum.get() ) * self.numPerPage
-        print startIndex
         sizeOfResult = len(self.titles) + 1
 
         for label in self.resultLabels:
@@ -214,11 +215,16 @@ class GUI:
 
         del self.resultLabels[:]
 
-        if (len(self.results)) - startIndex < self.numPerPage:
-            self.numPerPage = len(self.results)
 
-        totalItems = sizeOfResult * self.numPerPage
+        numPerPage = 0
+        if (len(self.results)) - startIndex < self.numPerPage:
+            numPerPage = len(self.results) - startIndex
+        else:
+            numPerPage = self.numPerPage
+
+        totalItems = (len(self.titles) + 1) * numPerPage
         countItems = 0
+
         while countItems < totalItems:
             if (countItems % sizeOfResult) == 0:
                 label = Label( self.resultsDisplay , text = str((countItems/sizeOfResult) + 1))
@@ -229,7 +235,6 @@ class GUI:
             else:
                 #TODO add binds
                 for item in self.results[startIndex + (countItems/sizeOfResult)]:
-                #for i in range(startIndex, startIndex + 1):
                     label = Label( self.resultsDisplay , text = item)
                     self.resultLabels.append(label)
                     label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
@@ -242,16 +247,17 @@ class GUI:
         self.deactivateButtons()
 
     def clickedResult( self, event, arg):
-        print arg
         dataSelected = self.results[arg[0]][arg[1]]
         dataType = self.titles[arg[1]]
-        print dataType
-        print dataSelected
 
         if dataType == self.titles[0]:
             self.clickPubMedID(dataSelected)
         elif dataType == self.titles[3]:
             self.clickSequenceMotif(dataSelected)
+        elif dataType == self.titles[10]:
+            self.clickPDB(dataSelected)
+        elif dataType == self.titles[11]:
+            self.clickUniProtID(dataSelected)
 
     def clickPubMedID( self , pubmedID):
         url = "https://www.ncbi.nlm.nih.gov/pubmed/" + pubmedID
@@ -259,6 +265,14 @@ class GUI:
 
     def clickSequenceMotif( self , motif):
         url = "http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/name&sequence=" + motif
+        webbrowser.open_new(url)
+
+    def clickPDB( self, PDB):
+        url = "https://bioinformatics.org/firstglance/fgij/fg.htm?mol=" + PDB
+        webbrowser.open_new(url)
+
+    def clickUniProtID( self, UniProtID):
+        url = "http://www.uniprot.org/uniprot/" + UniProtID
         webbrowser.open_new(url)
 
     def clickExpTypeEvent( self , expType ):
