@@ -28,7 +28,7 @@ class GUI:
                     "Sequence Motif" , "Annotation ID" ,
                     "Gene Name" , "Gene Description" , "Species" , "Domains" ,
                     "Aliases" , "PDBID" , "UniProtID"]
-        self.methodDict = {}
+        #self.methodDict = {"Pubmed ID": }
         self.toolTips = []
         self.titleList = []
         self.pageNum = IntVar()
@@ -249,10 +249,16 @@ class GUI:
         print dataSelected
 
         if dataType == self.titles[0]:
-            self.PubMedIDEvent(dataSelected)
+            self.clickPubMedID(dataSelected)
+        elif dataType == self.titles[3]:
+            self.clickSequenceMotif(dataSelected)
 
-    def PubMedIDEvent( self , pubmedID):
+    def clickPubMedID( self , pubmedID):
         url = "https://www.ncbi.nlm.nih.gov/pubmed/" + pubmedID
+        webbrowser.open_new(url)
+
+    def clickSequenceMotif( self , motif):
+        url = "http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/name&sequence=" + motif
         webbrowser.open_new(url)
 
     def clickExpTypeEvent( self , expType ):
