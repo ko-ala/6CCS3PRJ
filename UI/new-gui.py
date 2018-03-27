@@ -7,11 +7,16 @@ import tkMessageBox
 import webbrowser
 import database
 
-#TODO visualize both things
-
+#TODO visualize both things.
+    #Doneish
 #TODO add list of queries to bottom above search button?
-
-#TODO tooltips
+    #placed into the filters
+#TODO tooltips are flickering
+    #only works ok the text
+#TODO clickable labels
+    #done on 4 of them
+#TODO clicking on non page 0 is causing issues
+    #Fixed, didnt adjust index of item when not on the first page
 
 class GUI:
 
@@ -26,11 +31,27 @@ class GUI:
         self.speciesSearch = None
         self.expTypeSearch = None
         self.sortOptions = None
-        self.titles = [ "Pubmed ID" , "Experiment Type" , "Experiment Notes" ,
-                    "Sequence Motif" , "Annotation ID" , "Gene Name" ,
-                    "Gene Description" , "Species" , "Domains" ,
-                    "Aliases" , "PDBID" , "UniProtID"]
-        self.toolTips = []
+        self.titles = [ "PubMed ID" , "Experiment Type" , "Experiment Notes" ,
+            "Sequence Motif" , "Annotation ID" , "Gene Name" , "Gene Description" ,
+            "Species" , "Domains" , "Aliases" , "PDBID" , "UniProtID"]
+        self.toolTips = ["""The PubMed ID is a unique identifier attacked to each PubMed Record.
+            Clicking on the ID will take you to the corresponding experiment article on NCBI.""",
+            "The experiment type is the method used in the experiment to achieve these findings.",
+            "The experiment notes refer to any notes regarding the experiment.",
+            """The sequence motif is the reported motfis from the experiment. Clicking on it will
+            Take you to a online visualization of the sequence. However certain sequences may not
+            be displayed correctly due to a lack of data.""", """The annotation ID corresponds to the ID
+            of the protein stored on databases such as Ensembl/Flybase/Wormbase/etc.""", """The Gene Name is the
+            official (HGNC/MGI/Flybase) gene symbol.""", "The gene description.", """The species of the gene experiment
+            was conducted on.""", """The domains are listed by the following abbreviation:
+            \n RRM - RNA recognition motif\nKH - K homology\nLsm - Like Sm\nZnf_CCCH - CCCH zinc finger
+            \nZnf_C2H2 - C2H2 zinc finger\nCSD - Cold-shock domain
+            \nPUA - Pseudouridine synthase and archaeosine transglycosylase\nS1 - Ribosomal protein S1-like
+            \nSurp - Surp module/SWAP\nLa - Lupus La RNA-binding\nPWI - PWI domain\nYTH - YTH domain
+            \nPum - Pumilio-like repeat\nTHUMP - THUMP domain\nSAM - Sterile alpha motif\nTROVE - TROVE module""",
+            "Aliases are alternative names gene can be identified by.",
+            "PDBIDs is the Protein Data Bank ID(s) of the proteins. Click on this to see a visulization of the portein online.",
+            "UniProtIDs is the UniProt ID(s) for the gene. CLick on this to see the UniProt entry online."]
         self.titleList = []
         self.pageNum = IntVar()
         self.totalPages = 0
@@ -52,9 +73,8 @@ class GUI:
         self.setSearchFrame( master )
         self.setResultsFrame( master )
 
-    #TODO search by database?
     def setSearchFrame( self , root ):
-        #create frame
+
         self.searchFrame = LabelFrame( root , text="Search Bar" , padx=5 , pady=5 )
         self.searchFrame.config( font = ( "Calibri" , 16 ))
 
@@ -70,7 +90,7 @@ class GUI:
         self.expTypeSearch = DynamicSearchFrame( "Filter By Experiment Type" , self.searchFrame, "expType" )
         self.expTypeSearch.grid( row = 2, column = 1 )
 
-        self.searchButton = Tkinter.Button( self.searchFrame, text = "Search" , command = self.searchCommand )
+        self.searchButton = Tkinter.Button( self.searchFrame, text = "Search" , command = self.search )
         self.searchButton.grid(row = 4, column = 0, columnspan = 3, sticky = W+E+N+S)
         self.searchButton.config( font = ( "Calibri" , 12 ))
 
@@ -95,8 +115,7 @@ class GUI:
         self.yscrollbar.grid(row = 0, column = 1, rowspan = 2, sticky = N + S)
 
         self.resultsCanvas.configure(xscrollcommand=self.xscrollbar.set,
-            yscrollcommand=self.yscrollbar.set,
-            scrollregion = (0,0,500,500))
+            yscrollcommand=self.yscrollbar.set, scrollregion = (0,0,500,500))
         self.resultsCanvas.grid_columnconfigure(0, weight=1)
         self.resultsCanvas.grid_rowconfigure(0, weight=1)
 
@@ -123,7 +142,6 @@ class GUI:
 
         self.pageNum.set(0)
 
-        #TODO something strange here, nonetype error
         self.pageNum.trace("w", self.deactivateButtons)
 
         self.curPageLabel = Label(self.pageFrame , textvariable = self.pageNum)
@@ -155,13 +173,9 @@ class GUI:
 
     def changePage( self , numPages ):
         print "changePage"
-        print numPages
 
         numPages = int(self.pageNum.get()) + numPages
-        #TODO following line causes nonetype error
         self.pageNum.set(int(numPages))
-
-#        print self.pageNum.get()
 
         self.showResults()
 
@@ -169,7 +183,6 @@ class GUI:
         print "setTitles"
 
         self.titleList = []
-        self.setToolTips()
 
         self.numLabel = Label( self.resultsDisplay , text = "No." , bd = 10 )
         self.numLabel.grid( row = 0 , column = 0 )
@@ -180,18 +193,15 @@ class GUI:
             label.config( font = ( "Calibri" , 12 ))
             label.grid( row = 0 , column = index + 1 )
             label.bind( "<Button-1>" , lambda event, arg = index: self.sortByColumn( event , arg ) )
-            labelToolTip = CreateToolTip(label,"test")
+            labelToolTip = CreateToolTip(label, self.toolTips[index])
             self.titleList.append(label)
-
-    def setToolTips( self ):
-        print "setToolTips"
 
     def sortByColumn( self , event , index ):
         print "sortByColumn"
         self.results.sort(key=lambda tup: tup[index])
         self.showResults()
 
-    def searchCommand( self ):
+    def search( self ):
         print "got results"
         rnaQuery = self.rnaSearch.query
         rbpQuery = self.rbpSearch.query
@@ -206,15 +216,13 @@ class GUI:
 
     def showResults( self ):
         print "showResults"
-
-        startIndex = ( self.pageNum.get() ) * self.numPerPage
-        sizeOfResult = len(self.titles) + 1
-
         for label in self.resultLabels:
             label.grid_forget()
 
         del self.resultLabels[:]
 
+        startIndex = ( self.pageNum.get() ) * self.numPerPage
+        sizeOfResult = len(self.titles) + 1
 
         numPerPage = 0
         if (len(self.results)) - startIndex < self.numPerPage:
@@ -233,22 +241,42 @@ class GUI:
                 label.config( font = ( "Calibri" , 12 ))
                 countItems = countItems + 1
             else:
-                #TODO add binds
                 for item in self.results[startIndex + (countItems/sizeOfResult)]:
-                    label = Label( self.resultsDisplay , text = item)
+                    editItem = item
+                    if editItem == "\\N" or editItem == "":
+                        editItem = "Not Available"
+                    editItem = editItem.replace(";", ",")
+                    if len(editItem) > 15:
+                        editItem = editItem[:15]
+                        editItem = editItem + "..."
+
+                    label = Label( self.resultsDisplay , text = editItem)
                     self.resultLabels.append(label)
                     label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
+
+                    labelToolTip = CreateToolTip(label, item)
+
                     label.bind("<Button-1>", lambda event,
-                        arg = (countItems / sizeOfResult, ( countItems % sizeOfResult ) - 1 ):
+                        arg = (countItems / sizeOfResult,(countItems%sizeOfResult) - 1 ):
                         self.clickedResult( event , arg ) )
+
                     label.config( font = ( "Calibri" , 12 ))
+
                     countItems = countItems + 1
 
         self.deactivateButtons()
 
     def clickedResult( self, event, arg):
-        dataSelected = self.results[arg[0]][arg[1]]
+
+        print arg[0]
+        print self.pageNum.get()
+
+        resultNum = int(arg[0]) + self.pageNum.get() * self.numPerPage
+
+        dataSelected = self.results[resultNum][arg[1]]
         dataType = self.titles[arg[1]]
+
+        print dataSelected
 
         if dataType == self.titles[0]:
             self.clickPubMedID(dataSelected)
@@ -260,24 +288,33 @@ class GUI:
             self.clickUniProtID(dataSelected)
 
     def clickPubMedID( self , pubmedID):
-        url = "https://www.ncbi.nlm.nih.gov/pubmed/" + pubmedID
+        queries = pubmedID.split(";")
+        query = queries[-1]
+        query = query.strip()
+        url = "https://www.ncbi.nlm.nih.gov/pubmed/" + query
         webbrowser.open_new(url)
 
     def clickSequenceMotif( self , motif):
-        url = "http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/name&sequence=" + motif
+        queries = motif.split(";")
+        query = queries[-1]
+        query = query.strip()
+        url = "http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/name&sequence=" + query
         webbrowser.open_new(url)
 
     def clickPDB( self, PDB):
-        url = "https://bioinformatics.org/firstglance/fgij/fg.htm?mol=" + PDB
+        queries = PDB.split(";")
+        query = queries[-1]
+        query = query.strip()
+        url = "https://bioinformatics.org/firstglance/fgij/fg.htm?mol=" + query
         webbrowser.open_new(url)
 
     def clickUniProtID( self, UniProtID):
-        url = "http://www.uniprot.org/uniprot/" + UniProtID
+        queries = UniProtID.split(";")
+        query = queries[-1]
+        query= query.strip()
+        print query
+        url = "http://www.uniprot.org/uniprot/" + query
         webbrowser.open_new(url)
-
-    def clickExpTypeEvent( self , expType ):
-        print expType
-
 
 class DynamicSearchFrame(LabelFrame):
 
@@ -293,7 +330,7 @@ class DynamicSearchFrame(LabelFrame):
         self.setDynamicSearch( self )
 
     def setDynamicSearch( self , root ):
-        self.filter = Entry( self , textvariable = self.query , bd = 2 )
+        self.filter = Entry( self , text = "" , bd = 2 )
         self.filter.config( font = ( "Calibri" , 12 ))
         self.filter.bind( '<KeyRelease>' , self.onKeyRelease )
         self.filter.grid( row = 0 , column = 0 , padx = 5 , pady = 5 , sticky = W+E+N+S )
@@ -318,7 +355,8 @@ class DynamicSearchFrame(LabelFrame):
         #remove any duplicate returns
         data = list(set(data))
         for item in data:
-            self.listBox.insert( 'end' , item )
+            if not item == "":
+                self.listBox.insert( 'end' , item )
 
 
     def onKeyRelease( self , event ):
@@ -353,9 +391,13 @@ class DynamicSearchFrame(LabelFrame):
 
         self.query = event.widget.get( num )
 
+
         if self.query == "Any":
             self.query = ''
 
+        self.filter.delete(0,END)
+        self.filter.insert(0,self.query)
+        self.getData(self.query)
 
 #copied from https://stackoverflow.com/questions/3221956/how-do-i-display-tooltips-in-tkinter
 class CreateToolTip(object):
@@ -364,7 +406,7 @@ class CreateToolTip(object):
     """
     def __init__(self, widget, text='widget info'):
         self.waittime = 500     #miliseconds
-        self.wraplength = 180   #pixels
+        self.wraplength = 300   #pixels
         self.widget = widget
         self.text = text
         self.widget.bind("<Enter>", self.enter)
@@ -403,6 +445,7 @@ class CreateToolTip(object):
         label = Tkinter.Label(self.tw, text=self.text, justify='left',
                        background="#ffffff", relief='solid', borderwidth=1,
                        wraplength = self.wraplength)
+        label.config( font = ( "Calibri" , 12 ))
         label.pack(ipadx=1)
 
     def hidetip(self):
