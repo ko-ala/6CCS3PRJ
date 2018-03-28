@@ -298,6 +298,12 @@ class GUI:
         queries = motif.split(";")
         query = queries[-1]
         query = query.strip()
+        if "(n)" in query:
+            query = query[:len(query)-3]
+            #print len(query)
+            query = query[1:len(query)-1]
+            print query
+            query = query * 10
         url = "http://nibiru.tbi.univie.ac.at/forna/forna.html?id=url/name&sequence=" + query
         webbrowser.open_new(url)
 
