@@ -1,22 +1,28 @@
 
 import sqlite3
 import csv
+import requests
+import sys
 
 #TODO for many fields, need to seperate by semicolon as there are multiple entries per column
 
 def createDB():
     print "create"
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     cursor = connect.cursor()
 
+    #cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='proteins'")
+
+    #exists = cursor.fetchall()
+
     createRBPDB()
+    getSequences()
     #createPOSTAR()
-    #createCISBP()
 
 def createPOSTAR():
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     cursor = connect.cursor()
 
     cursor.execute("""DROP TABLE IF EXISTS POSTAR""")
@@ -54,60 +60,12 @@ def createPOSTAR():
 
     connect.commit()
 
-def createCISBP():
-
-    connect = sqlite3.connect('test.db')
-    cursor = connect.cursor()
-
-    cursor.execute("DROP TABLE IF EXISTS RBPInfoMotif")
-    #cursor.execute("DROP TABLE IF EXISTS RBPInfo")
-
-    connect.commit()
-
-    cursor.execute("""CREATE TABLE IF NOT EXISTS RBPInfoMotif(RBPID, FamilyID,
-        ResourceID, MotifID, MSourceID, DBID1, RBPName, RBPSpecies,
-        RBPStatus, FamilyName, RBDs, RBDCount, Cutoff, DBID2, MotifType,
-        MSourceIdentifier, MSourceType, MSourceAuthor, MSourceYear,
-        PMID, MSource_Version, RBPSourceName, RBPSourceURL, RBPSourceYear,
-        RBPSourceMonth, RBPSourceDay);""")
-    #cursor.execute("""CREATE TABLE IF NOT EXISTS RBPInfo())
-
-    with open('../DATA/CISBP_RNA_entiredata/RBP_Information_all_motifs.txt', 'r') as dataFile:
-        for line in dataFile:
-            data = line.split()
-            print "data size"
-            print len(data)
-            insert = []
-            for item in data:
-                print item
-                insert.append(item)
-            print "insert size"
-            print len(insert)
-            cursor.execute("""INSERT INTO RBPInfoMotif(RBPID, FamilyID,
-                ResourceID, MotifID, MSourceID, DBID1, RBPName, RBPSpecies,
-                RBPStatus, FamilyName, RBDs, RBDCount, Cutoff, DBID2, MotifType,
-                MSourceIdentifier, MSourceType, MSourceAuthor, MSourceYear,
-                PMID, MSource_Version, RBPSourceName, RBPSourceURL, RBPSourceYear,
-                RBPSourceMonth, RBPSourceDay) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (data))
-            if 'str' in line:
-                break
-    """
-    try:
-         RBP_Information_all_motifsFile = open('../DATA/CISBP_RNA_entiredata/RBP_Information_all_motifs.txt', 'r')
-    except:
-        print "File not found"
-
-    data = RBP_Information_all_motifsFile.read()
-    data = data.split()
-    """
-
 def createRBPDB():
+    print "createRBPDB"
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     cursor = connect.cursor()
 
-    #testing so need to delete tables
     cursor.execute("DROP TABLE IF EXISTS protExp")
     cursor.execute("DROP TABLE IF EXISTS proteins")
     cursor.execute("DROP TABLE IF EXISTS experiments")
@@ -118,7 +76,7 @@ def createRBPDB():
     cursor.execute("""CREATE TABLE IF NOT EXISTS experiments(expID, pubmedID, exptype,
         notes, sequence_motif, flag, falgNotes);""")
     cursor.execute("""CREATE TABLE IF NOT EXISTS proteins(ID, annotID, createDate,
-        updateDate, geneName, geneDesc, species, taxID, domains, flag, flagNotes,
+        updateDate, geneName, geneDesc, geneSequence, proteinSequence, species, taxID, domains, flag, flagNotes,
         aliases, PDBIDs, uniProtIDs);""")
 
     #import data from csv files
@@ -142,37 +100,148 @@ def createRBPDB():
 
     with open('../DATA/RBPDB/proteins.csv', 'rb') as ssProteins:
         dr = csv.DictReader(ssProteins)
+        #print type(dr)
         to_proteins = [(i['ID'], i['annotID'], i['createDate'], i['updateDate'], i['geneName'],
-                i['geneDesc'], i['species'], i['taxID'], i['domains'], i['flag'],
-                i['flagNotes'], i['aliases'], i['PDBIDs'], i['uniProtIDs']) for i in dr]
+            i['geneDesc'], "", "", i['species'], i['taxID'], i['domains'], i['flag'],
+            i['flagNotes'], i['aliases'], i['PDBIDs'], i['uniProtIDs']) for i in dr]
 
     cursor.executemany("""
-                        INSERT INTO proteins(ID, annotID, createDate, updateDate,
-                        geneName, geneDesc, species, taxID, domains, flag, flagNotes,
-                        aliases, PDBIDs, uniProtIDs)
-                        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""", to_proteins)
+        INSERT INTO proteins(ID, annotID, createDate, updateDate,
+        geneName, geneDesc, geneSequence, proteinSequence, species, taxID,
+        domains, flag, flagNotes, aliases, PDBIDs, uniProtIDs)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""", to_proteins)
 
     connect.commit()
     connect.close()
 
+    """to_proteins = []
+    for i in dr:
+        ID = i['ID']
+        annotID = i['annotID']
+        createDate = i['createDate']
+        updateDate = i['updateDate']
+        geneName = i['geneName']
+        geneDesc = i['geneDesc']
+        geneSequence = ""
+        species = i['species']
+        taxID = i['taxID']
+        domains = i['domains']
+        flag = i['flag']
+        flagNotes = i['flagNotes']
+        aliases = i['aliases']
+        PDBIDs = i['PDBIDs']
+        uniProtIDs = i['uniProtIDs']"""
+"""
+        #TODO try catch
+        url = "http://www.uniprot.org/uniprot/" + uniProtIDs + ".fasta"
+        f = requests.get(url)
+        text = f.text.encode('ascii','ignore')
+        text = text.split('\n')
+        text = text[1:-1]
+        text = ''.join(text)
+        if "<" in text:
+            text = ""
+        sequence = text
+    to_proteins.append((ID, annotID, createDate, updateDate, geneName, geneDesc,
+    sequence, species, taxID, domains, flag, flagNotes, aliases, PDBIDs, uniProtIDs))"""
+
+def getSequences():
+    print "getSequences"
+
+    getEnsemblSequence()
+    getFlyBaseSequence()
+    getUniProtSequence()
+
+def getEnsemblSequence():
+    print "getEnsemblSequence"
+    connect = sqlite3.connect('database.db')
+    connect.row_factory = lambda cursor, row: row[0]
+    cursor = connect.cursor()
+
+    ensemblStatement = """SELECT proteins.annotID
+        FROM experiments
+        INNER JOIN protExp on experiments.expID = protExp.expID
+        INNER JOIN proteins on protExp.protID = proteins.ID
+        WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+        experiments.sequence_motif != "\N" AND
+        experiments.sequence_motif != "" AND
+        proteins.annotID LIKE 'ENSG%';"""
+
+    cursor.execute(ensemblStatement)
+    ensemblRows = cursor.fetchall()
+
+    #for ensemblID in ensemblRows:
+    server = "http://rest.ensembl.org"
+    ext = "/sequence/id"
+    headers={ "Content-Type" : "application/json", "Accept" : "application/json"}
+
+    for i in range(len(ensemblRows)/50+1):
+        query = '{ "ids" : ['
+        for j in range(0,50):
+            if i*50 + j < len(ensemblRows):
+                query = query + '"'+ensemblRows[j]+'",'
+            else:
+                break
+
+        query = query[:-1]
+        query = query+'] }'
+
+        r = requests.post(server+ext, headers=headers, data=query)
+        if not r.ok:
+          r.raise_for_status()
+          sys.exit()
+
+        decoded = r.json()
+
+        for i in range(len(decoded)):
+            ensemblID = decoded[i].get("id")
+            sequence = decoded[i].get("seq")
+
+            ensemblID = "'" + ensemblID + "'"
+            sequence = "'" + sequence + "'"
+            statement = """UPDATE proteins
+                SET geneSequence =  """+ sequence + """
+                WHERE proteins.annotID = """ + ensemblID + ";"
+
+            cursor.execute(statement)
+            connect.commit()
+
+def getFlyBaseSequence():
+    print "getFlyBaseSequence"
+
+def getUniProtSequence():
+    print "getUniProtSequence"
+
+    url = "http://www.uniprot.org/uniprot/" + uniProtIDs + ".fasta"
+    f = requests.get(url)
+    text = f.text.encode('ascii','ignore')
+    text = text.split('\n')
+    text = text[1:-1]
+    text = ''.join(text)
+    if "<" in text:
+        text = ""
+    sequence = text
+
 def searchRNAList(query):
     print "searchByRNA"
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     connect.row_factory = lambda cursor, row: row[0]
     cursor = connect.cursor()
 
     query = "'" + query + "%'"
 
-    cursor.execute("""
-                    SELECT experiments.sequence_motif
-                    FROM experiments
-                    INNER JOIN protExp on experiments.expID = protExp.expID
-                    INNER JOIN proteins on protExp.protID = proteins.ID
-                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
-                    experiments.sequence_motif != "\N" AND
-                    experiments.sequence_motif != "" AND
-                    experiments.sequence_motif LIKE """ + query +";")
+    statement = """
+        SELECT experiments.sequence_motif
+        FROM experiments
+        INNER JOIN protExp on experiments.expID = protExp.expID
+        INNER JOIN proteins on protExp.protID = proteins.ID
+        WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+        experiments.sequence_motif != "\N" AND
+        experiments.sequence_motif != "" AND
+        experiments.sequence_motif LIKE """ + query +";"
+
+    cursor.execute(statement)
 
     rows = cursor.fetchall()
 
@@ -181,21 +250,23 @@ def searchRNAList(query):
 def searchSpeciesList(query):
     print "searchBySpecies"
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     connect.row_factory = lambda cursor, row: row[0]
     cursor = connect.cursor()
 
     query = "'" + query + "%'"
 
-    cursor.execute("""
-                    SELECT proteins.species
-                    FROM experiments
-                    INNER JOIN protExp on experiments.expID = protExp.expID
-                    INNER JOIN proteins on protExp.protID = proteins.ID
-                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
-                    experiments.sequence_motif != "\N" AND
-                    experiments.sequence_motif != "" AND
-                    proteins.species LIKE """ + query +";")
+    statement = """
+        SELECT proteins.species
+        FROM experiments
+        INNER JOIN protExp on experiments.expID = protExp.expID
+        INNER JOIN proteins on protExp.protID = proteins.ID
+        WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+        experiments.sequence_motif != "\N" AND
+        experiments.sequence_motif != "" AND
+        proteins.species LIKE """ + query +";"
+
+    cursor.execute(statement)
 
     rows = cursor.fetchall()
 
@@ -203,21 +274,23 @@ def searchSpeciesList(query):
 def searchExpTypeList(query):
     print "searchBySpecies"
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     connect.row_factory = lambda cursor, row: row[0]
     cursor = connect.cursor()
 
     query = "'" + query + "%'"
 
-    cursor.execute("""
-                    SELECT experiments.exptype
-                    FROM experiments
-                    INNER JOIN protExp on experiments.expID = protExp.expID
-                    INNER JOIN proteins on protExp.protID = proteins.ID
-                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
-                    experiments.sequence_motif != "\N" AND
-                    experiments.sequence_motif != "" AND
-                    experiments.exptype LIKE """ + query +";")
+    statement = """
+        SELECT experiments.exptype
+        FROM experiments
+        INNER JOIN protExp on experiments.expID = protExp.expID
+        INNER JOIN proteins on protExp.protID = proteins.ID
+        WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+        experiments.sequence_motif != "\N" AND
+        experiments.sequence_motif != "" AND
+        experiments.exptype LIKE """ + query +";"
+
+    cursor.execute(statement)
 
     rows = cursor.fetchall()
 
@@ -227,44 +300,46 @@ def searchExpTypeList(query):
 def searchProteinList(query):
     print "searchByProtein"
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     connect.row_factory = lambda cursor, row: row[0]
     cursor = connect.cursor()
 
     query = "'" + query + "%'"
 
-    cursor.execute("""
-                    SELECT proteins.geneName
-                    FROM experiments
-                    INNER JOIN protExp on experiments.expID = protExp.expID
-                    INNER JOIN proteins on protExp.protID = proteins.ID
-                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
-                    experiments.sequence_motif != "\N" AND
-                    experiments.sequence_motif != "" AND
-                    proteins.geneName LIKE """ + query + ";")
+    statement = """
+        SELECT proteins.geneName
+        FROM experiments
+        INNER JOIN protExp on experiments.expID = protExp.expID
+        INNER JOIN proteins on protExp.protID = proteins.ID
+        WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+        experiments.sequence_motif != "\N" AND
+        experiments.sequence_motif != "" AND
+        proteins.geneName LIKE """ + query + ";"
+
+    cursor.execute(statement)
 
     rows = cursor.fetchall()
     return rows
 
 def searchByProtein(query):
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     connect.text_factory = str
     cursor = connect.cursor()
     query = "'" + query + "%'"
 
-    print "query"
-    print query
+    statement = """
+        SELECT experiments.pubmedID, experiments.exptype, experiments.notes,
+        experiments.sequence_motif, proteins.annotID, proteins.geneName,
+        proteins.geneDesc, proteins.species, proteins.domains,
+        proteins.aliases, proteins.PDBIDs, proteins.uniProtIDs
+        FROM experiments
+        INNER JOIN protExp on experiments.expID = protExp.expID
+        INNER JOIN proteins on protExp.protID = proteins.ID
+        WHERE experiments.flag != 1 AND proteins.flag != 1
+        AND proteins.geneName LIKE """ + query + ";"
 
-    cursor.execute("""
-                    SELECT experiments.pubmedID, experiments.exptype, experiments.notes,
-                    experiments.sequence_motif, proteins.annotID, proteins.geneName,
-                    proteins.geneDesc, proteins.species, proteins.domains,
-                    proteins.aliases, proteins.PDBIDs, proteins.uniProtIDs
-                    FROM experiments
-                    INNER JOIN protExp on experiments.expID = protExp.expID
-                    INNER JOIN proteins on protExp.protID = proteins.ID
-                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND proteins.geneName LIKE """ + query + ";")
+    cursor.execute(statement)
 
     rows = cursor.fetchall()
     print len(rows)
@@ -273,7 +348,7 @@ def searchByProtein(query):
 def searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery ):
     print "searchData"
 
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     connect.text_factory = str
     cursor = connect.cursor()
     rnaQuery = "'" + rnaQuery + "%'"
@@ -281,19 +356,22 @@ def searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery ):
     speciesQuery = "'" + speciesQuery + "%'"
     expTypeQuery = "'" + expTypeQuery + "%'"
 
-    cursor.execute("""
-                    SELECT experiments.pubmedID, experiments.exptype, experiments.notes,
-                    experiments.sequence_motif,proteins.annotID, proteins.geneName,
-                    proteins.geneDesc, proteins.species, proteins.domains,
-                    proteins.aliases, proteins.PDBIDs, proteins.uniProtIDs
-                    FROM experiments
-                    INNER JOIN protExp on experiments.expID = protExp.expID
-                    INNER JOIN proteins on protExp.protID = proteins.ID
-                    WHERE experiments.flag != 1 AND proteins.flag != 1 AND
-                    experiments.sequence_motif LIKE """ + rnaQuery +
-                    " AND proteins.geneName LIKE " + rbpQuery +
-                    " AND proteins.species LIKE " + speciesQuery +
-                    "AND experiments.expType LIKE " + expTypeQuery + ";")
+    statement = """
+        SELECT experiments.pubmedID, experiments.exptype, experiments.notes,
+        experiments.sequence_motif, proteins.annotID, proteins.geneName,
+        proteins.geneDesc, proteins.geneSequence, proteins.proteinSequence,
+        proteins.species, proteins.domains, proteins.aliases, proteins.PDBIDs,
+        proteins.uniProtIDs
+        FROM experiments
+        INNER JOIN protExp on experiments.expID = protExp.expID
+        INNER JOIN proteins on protExp.protID = proteins.ID
+        WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+        experiments.sequence_motif LIKE """ + rnaQuery + """
+         AND proteins.geneName LIKE """ + rbpQuery + """
+         AND proteins.species LIKE """ + speciesQuery + """
+         AND experiments.expType LIKE """ + expTypeQuery + ";"
+
+    cursor.execute(statement)
 
     rows = cursor.fetchall()
     print len(rows)
@@ -301,18 +379,18 @@ def searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery ):
 
 # test function to see if database exists
 def get_posts():
-    connect = sqlite3.connect('test.db')
+    connect = sqlite3.connect('database.db')
     cursor = connect.cursor()
     with connect:
         cursor.execute("SELECT * FROM protExp")
         print(cursor.fetchall())
     #connect.commit()
 
-created = False
-connect = sqlite3.connect('test.db')
-cursor = connect.cursor()
+"""created = False
+connect = sqlite3.connect('database.db')
+""cursor = connect.cursor()
+"""
+createDB()
 
-print "hello world"
-
-if not created:
-    createDB()
+#createRBPDB()
+#getSequences()

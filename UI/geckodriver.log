@@ -1,0 +1,67 @@
+1522421740700	geckodriver	INFO	geckodriver 0.20.0
+1522421740705	geckodriver	INFO	Listening on 127.0.0.1:41825
+1522421741709	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.pxqr6kjjB5Df"
+1522421744064	Marionette	INFO	Listening on port 2828
+1522421867840	geckodriver	INFO	geckodriver 0.20.0
+1522421867844	geckodriver	INFO	Listening on 127.0.0.1:41440
+1522421868852	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.BsC7o8HhWahT"
+1522421871151	Marionette	INFO	Listening on port 2828
+1522421923483	geckodriver	INFO	geckodriver 0.20.0
+1522421923486	geckodriver	INFO	Listening on 127.0.0.1:34814
+1522421924492	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.p5PxjN2roEie"
+1522421926614	Marionette	INFO	Listening on port 2828
+Warning: An attempt was made to write to the DEVTOOLS_COPY_FULL_CSS_SELECTOR_OPENED_COUNT histogram, which is not defined in Histograms.json
+1522426079917	geckodriver	INFO	geckodriver 0.20.0
+1522426079925	geckodriver	INFO	Listening on 127.0.0.1:42597
+1522426080928	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.PjLTr95F6bUH"
+1522426084022	Marionette	INFO	Listening on port 2828
+1522452491429	geckodriver	INFO	geckodriver 0.20.0
+1522452491432	geckodriver	INFO	Listening on 127.0.0.1:60206
+1522452492440	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.DEJLVPW1lQjo"
+1522452494593	Marionette	INFO	Listening on port 2828
+*************************
+A coding exception was thrown and uncaught in a Task.
+
+Full message: TypeError: NetworkError when attempting to fetch resource.
+Full stack: 
+*************************
+1522453254446	geckodriver	INFO	geckodriver 0.20.0
+1522453254449	geckodriver	INFO	Listening on 127.0.0.1:52288
+1522453255453	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.XeWaxp59WP3j"
+1522453257783	Marionette	INFO	Listening on port 2828
+1522453571650	geckodriver	INFO	geckodriver 0.20.0
+1522453571659	geckodriver	INFO	Listening on 127.0.0.1:54685
+1522453572657	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.HCjyFHej440F"
+1522453575815	Marionette	INFO	Listening on port 2828
+1522453629492	geckodriver	INFO	geckodriver 0.20.0
+1522453629500	geckodriver	INFO	Listening on 127.0.0.1:43091
+1522453630497	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.vOG5Bg7lFzdM"
+1522453633385	Marionette	INFO	Listening on port 2828
+1522453923037	geckodriver	INFO	geckodriver 0.20.0
+1522453923042	geckodriver	INFO	Listening on 127.0.0.1:49389
+1522453924041	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.YcSxWDlCwOkU"
+1522453927568	Marionette	ERROR	Error on starting server: [Exception... "Component returned failure code: 0x804b0036 (NS_ERROR_SOCKET_ADDRESS_IN_USE) [nsIServerSocket.initSpecialConnection]"  nsresult: "0x804b0036 (NS_ERROR_SOCKET_ADDRESS_IN_USE)"  location: "JS frame :: chrome://marionette/content/server.js :: MarionetteServer.prototype.start :: line 95"  data: no]
+[Exception... "Component returned failure code: 0x804b0036 (NS_ERROR_SOCKET_ADDRESS_IN_USE) [nsIServerSocket.initSpecialConnection]"  nsresult: "0x804b0036 (NS_ERROR_SOCKET_ADDRESS_IN_USE)"  location: "JS frame :: chrome://marionette/content/server.js :: MarionetteServer.prototype.start :: line 95"  data: no]
+MarionetteServer.prototype.start@chrome://marionette/content/server.js:95:19
+MarionetteComponent.prototype.init@resource://gre/components/marionette.js:247:5
+MarionetteComponent.prototype.observe@resource://gre/components/marionette.js:174:9
+initializeWindow@resource:///modules/sessionstore/SessionStore.jsm:1145:9
+onBeforeBrowserWindowShown/<@resource:///modules/sessionstore/SessionStore.jsm:1295:9
+process@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:917:23
+walkerLoop@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:801:7
+scheduleWalkerLoop/<@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:737:11
+
+*************************
+A coding exception was thrown and uncaught in a Task.
+
+Full message: TypeError: NetworkError when attempting to fetch resource.
+Full stack: 
+*************************
+1522490044105	geckodriver	INFO	geckodriver 0.20.0
+1522490044117	geckodriver	INFO	Listening on 127.0.0.1:45582
+1522490045108	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.HA6s2uBTMoPK"
+1522490047499	Marionette	INFO	Listening on port 2828
+1522510981086	geckodriver	INFO	geckodriver 0.20.0
+1522510981090	geckodriver	INFO	Listening on 127.0.0.1:53552
+1522510982098	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.pXeW8BhCzeJH"
+1522510984686	Marionette	INFO	Listening on port 2828

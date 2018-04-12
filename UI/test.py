@@ -1,20 +1,20 @@
-#!/usr/bin/python
+    for i in range(len(ensemblRows)/50+1):
+        query = '{ "ids" : ['
+        for j in range(0,50):
+            if i*50 + j < len(ensemblRows):
+                query = query + '"'+ensemblRows[j]+'",'
+            else:
+                break
+        query = query[:-1]
+        query = query+'] }'
 
-import sys
-from Tkinter import *
+        r = requests.post(server+ext, headers=headers, data=query)
 
-print "hello world"
+        if not r.ok:
+          r.raise_for_status()
+          sys.exit()
 
-
-def test():
-    print "test"
-
-
-master = Tk()
-
-w = Label(master, text="Hello, world!")
-w.config( font = ( "Calibri" , 12 ))
-w.bind("<Enter>", test())
-w.pack()
-
-mainloop()
+        decoded = r.json()
+        #print repr(decoded)
+        print len(decoded)
+        print len(decoded[0])

@@ -17,6 +17,19 @@ import database
     #done on 4 of them
 #TODO clicking on non page 0 is causing issues
     #Fixed, didnt adjust index of item when not on the first page
+#TODO on 1 filter works at a time
+
+#TODO check grids
+
+#TODO interesting data selection
+
+#TODO get fasta sequence of RBP
+    #http://www.uniprot.org/uniprot/P26599.fasta
+    #Done?
+#TODO get secondary sequnce from forna
+    #//*[@id="chart"]/div[2]/div[2]/div[2]/ul/li[6]/a
+#TODO find full sequence of RNA
+    #http://www.rnacentral.org/
 
 class GUI:
 
@@ -32,8 +45,8 @@ class GUI:
         self.expTypeSearch = None
         self.sortOptions = None
         self.titles = [ "PubMed ID" , "Experiment Type" , "Experiment Notes" ,
-            "Sequence Motif" , "Annotation ID" , "Gene Name" , "Gene Description" ,
-            "Species" , "Domains" , "Aliases" , "PDBID" , "UniProtID"]
+            "Sequence Motif" , "Annotation ID" , "Gene Name" , "Gene Description", "geneSequence",
+            "Protein Sequence", "Species" , "Domains" , "Aliases" , "PDBID" , "UniProtID"]
         self.toolTips = ["""The PubMed ID is a unique identifier attacked to each PubMed Record.
             Clicking on the ID will take you to the corresponding experiment article on NCBI.""",
             "The experiment type is the method used in the experiment to achieve these findings.",
@@ -42,7 +55,7 @@ class GUI:
             Take you to a online visualization of the sequence. However certain sequences may not
             be displayed correctly due to a lack of data.""", """The annotation ID corresponds to the ID
             of the protein stored on databases such as Ensembl/Flybase/Wormbase/etc.""", """The Gene Name is the
-            official (HGNC/MGI/Flybase) gene symbol.""", "The gene description.", """The species of the gene experiment
+            official (HGNC/MGI/Flybase) gene symbol.""", "The gene description.", "The Gene Sequence", "The Protein Sequence", """The species of the gene experiment
             was conducted on.""", """The domains are listed by the following abbreviation:
             \n RRM - RNA recognition motif\nKH - K homology\nLsm - Like Sm\nZnf_CCCH - CCCH zinc finger
             \nZnf_C2H2 - C2H2 zinc finger\nCSD - Cold-shock domain
@@ -243,8 +256,9 @@ class GUI:
             else:
                 for item in self.results[startIndex + (countItems/sizeOfResult)]:
                     editItem = item
-                    if editItem == "\\N" or editItem == "":
+                    if editItem == "\\N" or editItem == "" or "<" in editItem:
                         editItem = "Not Available"
+                        item = editItem
                     editItem = editItem.replace(";", ",")
                     if len(editItem) > 15:
                         editItem = editItem[:15]
