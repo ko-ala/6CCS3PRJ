@@ -1,24 +1,19 @@
-
 import sqlite3
 import csv
 import requests
 import sys
+import os
 
 #TODO for many fields, need to seperate by semicolon as there are multiple entries per column
 
 def createDB():
     print "create"
-
-    connect = sqlite3.connect('database.db')
-    cursor = connect.cursor()
-
-    #cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='proteins'")
-
-    #exists = cursor.fetchall()
-
-    createRBPDB()
-    getSequences()
-    #createPOSTAR()
+    filename = 'database.db'
+    if not os.path.exists(filename):
+        connect = sqlite3.connect('database.db')
+        cursor = connect.cursor()
+        createRBPDB()
+        getSequences()
 
 def createPOSTAR():
 
@@ -114,37 +109,6 @@ def createRBPDB():
     connect.commit()
     connect.close()
 
-    """to_proteins = []
-    for i in dr:
-        ID = i['ID']
-        annotID = i['annotID']
-        createDate = i['createDate']
-        updateDate = i['updateDate']
-        geneName = i['geneName']
-        geneDesc = i['geneDesc']
-        geneSequence = ""
-        species = i['species']
-        taxID = i['taxID']
-        domains = i['domains']
-        flag = i['flag']
-        flagNotes = i['flagNotes']
-        aliases = i['aliases']
-        PDBIDs = i['PDBIDs']
-        uniProtIDs = i['uniProtIDs']"""
-"""
-        #TODO try catch
-        url = "http://www.uniprot.org/uniprot/" + uniProtIDs + ".fasta"
-        f = requests.get(url)
-        text = f.text.encode('ascii','ignore')
-        text = text.split('\n')
-        text = text[1:-1]
-        text = ''.join(text)
-        if "<" in text:
-            text = ""
-        sequence = text
-    to_proteins.append((ID, annotID, createDate, updateDate, geneName, geneDesc,
-    sequence, species, taxID, domains, flag, flagNotes, aliases, PDBIDs, uniProtIDs))"""
-
 def getSequences():
     print "getSequences"
 
@@ -165,7 +129,7 @@ def getEnsemblSequence():
         WHERE experiments.flag != 1 AND proteins.flag != 1 AND
         experiments.sequence_motif != "\N" AND
         experiments.sequence_motif != "" AND
-        proteins.annotID LIKE 'ENSG%';"""
+        proteins.annotID LIKE 'ENS%';"""
 
     cursor.execute(ensemblStatement)
     ensemblRows = cursor.fetchall()
@@ -178,15 +142,16 @@ def getEnsemblSequence():
     for i in range(len(ensemblRows)/50+1):
         query = '{ "ids" : ['
         for j in range(0,50):
-            if i*50 + j < len(ensemblRows):
+            print i * 50 + j
+            if i * 50 + j < len(ensemblRows):
                 query = query + '"'+ensemblRows[j]+'",'
             else:
                 break
-
         query = query[:-1]
         query = query+'] }'
 
         r = requests.post(server+ext, headers=headers, data=query)
+
         if not r.ok:
           r.raise_for_status()
           sys.exit()
@@ -196,14 +161,14 @@ def getEnsemblSequence():
         for i in range(len(decoded)):
             ensemblID = decoded[i].get("id")
             sequence = decoded[i].get("seq")
-
             ensemblID = "'" + ensemblID + "'"
             sequence = "'" + sequence + "'"
-            statement = """UPDATE proteins
+
+            updateStatement = """UPDATE proteins
                 SET geneSequence =  """+ sequence + """
                 WHERE proteins.annotID = """ + ensemblID + ";"
 
-            cursor.execute(statement)
+            cursor.execute(updateStatement)
             connect.commit()
 
 def getFlyBaseSequence():
@@ -212,15 +177,46 @@ def getFlyBaseSequence():
 def getUniProtSequence():
     print "getUniProtSequence"
 
-    url = "http://www.uniprot.org/uniprot/" + uniProtIDs + ".fasta"
-    f = requests.get(url)
-    text = f.text.encode('ascii','ignore')
-    text = text.split('\n')
-    text = text[1:-1]
-    text = ''.join(text)
-    if "<" in text:
-        text = ""
-    sequence = text
+    connect = sqlite3.connect('database.db')
+    connect.row_factory = lambda cursor, row: row[0]
+    cursor = connect.cursor()
+
+    uniProtStatement = """SELECT proteins.uniProtIDs
+        FROM experiments
+        INNER JOIN protExp on experiments.expID = protExp.expID
+        INNER JOIN proteins on protExp.protID = proteins.ID
+        WHERE experiments.flag != 1 AND proteins.flag != 1 AND
+        experiments.sequence_motif != "\N" AND
+        experiments.sequence_motif != "" ;"""
+
+    cursor.execute(uniProtStatement)
+    uniProtRows = cursor.fetchall()
+
+    for uniProtID in uniProtRows:
+        if not uniProtID  == "\\N":
+            uniProtID = uniProtID.split(";")
+            for i in range(len(uniProtID)):
+                ID = uniProtID[i]
+                ID = ID.replace(" ", "")
+
+                url = "http://www.uniprot.org/uniprot/" + ID + ".fasta"
+                try:
+                    f = requests.get(url)
+                except Exception:
+                    pass
+                text = f.text.encode('ascii','ignore')
+                text = text.split('\n')
+                text = text[1:-1]
+                sequence = ''.join(text)
+                sequence = "'" + sequence + "'"
+                ID = "'" + ID + "'"
+
+                updateStatement = """UPDATE proteins
+                    SET proteinSequence =  """+ sequence + """
+                    WHERE proteins.uniProtIDs = """ + ID + ";"
+
+                cursor.execute(updateStatement)
+                connect.commit()
 
 def searchRNAList(query):
     print "searchByRNA"
@@ -377,20 +373,5 @@ def searchData( rnaQuery , rbpQuery , speciesQuery , expTypeQuery ):
     print len(rows)
     return rows
 
-# test function to see if database exists
-def get_posts():
-    connect = sqlite3.connect('database.db')
-    cursor = connect.cursor()
-    with connect:
-        cursor.execute("SELECT * FROM protExp")
-        print(cursor.fetchall())
-    #connect.commit()
-
-"""created = False
-connect = sqlite3.connect('database.db')
-""cursor = connect.cursor()
-"""
 createDB()
-
-#createRBPDB()
-#getSequences()
+#getUniProtSequence()

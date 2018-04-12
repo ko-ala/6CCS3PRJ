@@ -5,7 +5,10 @@ from Tkinter import *
 import ttk
 import tkMessageBox
 import webbrowser
+import os
 import database
+#TODO dont show full text of sequences. memory error
+
 
 #TODO visualize both things.
     #Doneish
@@ -82,6 +85,11 @@ class GUI:
         self.resultLabels = []
 
         master.title( "RNA RBP Database" )
+
+        filename = 'database.db'
+        if not os.path.exists(filename):
+            print "creating database"
+            database.createDB()
 
         self.setSearchFrame( master )
         self.setResultsFrame( master )
