@@ -5,10 +5,7 @@ from Tkinter import *
 import ttk
 import tkMessageBox
 import webbrowser
-import os
 import database
-#TODO dont show full text of sequences. memory error
-
 
 #TODO visualize both things.
     #Doneish
@@ -48,7 +45,7 @@ class GUI:
         self.expTypeSearch = None
         self.sortOptions = None
         self.titles = [ "PubMed ID" , "Experiment Type" , "Experiment Notes" ,
-            "Sequence Motif" , "Annotation ID" , "Gene Name" , "Gene Description", "geneSequence",
+            "Sequence Motif" , "Annotation ID" , "Gene Name" , "Gene Description", "Gene Sequence",
             "Protein Sequence", "Species" , "Domains" , "Aliases" , "PDBID" , "UniProtID"]
         self.toolTips = ["""The PubMed ID is a unique identifier attacked to each PubMed Record.
             Clicking on the ID will take you to the corresponding experiment article on NCBI.""",
@@ -85,11 +82,6 @@ class GUI:
         self.resultLabels = []
 
         master.title( "RNA RBP Database" )
-
-        filename = 'database.db'
-        if not os.path.exists(filename):
-            print "creating database"
-            database.createDB()
 
         self.setSearchFrame( master )
         self.setResultsFrame( master )

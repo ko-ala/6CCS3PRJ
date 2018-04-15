@@ -161,6 +161,7 @@ def getEnsemblSequence():
         for i in range(len(decoded)):
             ensemblID = decoded[i].get("id")
             sequence = decoded[i].get("seq")
+            sequence = sequence.replace("T","U")
             ensemblID = "'" + ensemblID + "'"
             sequence = "'" + sequence + "'"
 
