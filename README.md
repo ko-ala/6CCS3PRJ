@@ -30,8 +30,8 @@ If everything runs smoothly, the application should now be running and the datab
 * **Ethan Ko** 
 
 ## Contributors
-* *Dr Kathleen Steinhöfel* - *Project Supervisor*
-* *Mr Rayan Alnamnakany*
+* **Dr Kathleen Steinhöfel** - *Project Supervisor*
+* **Mr Rayan Alnamnakany**
 
 ## Acknowledgements
 Thank you to Dr Kathleen Steinhöfel for all the support she provided over the course of this project. The topic is very difficult and without her support this would not have been achievable. Likewise to Mr Rayan Alnamnakany, his support was instrumental in helping this project achieve what it has. 
