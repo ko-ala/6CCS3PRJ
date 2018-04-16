@@ -7,30 +7,6 @@ import tkMessageBox
 import webbrowser
 import database
 
-#TODO visualize both things.
-    #Doneish
-#TODO add list of queries to bottom above search button?
-    #placed into the filters
-#TODO tooltips are flickering
-    #only works ok the text
-#TODO clickable labels
-    #done on 4 of them
-#TODO clicking on non page 0 is causing issues
-    #Fixed, didnt adjust index of item when not on the first page
-#TODO on 1 filter works at a time
-
-#TODO check grids
-
-#TODO interesting data selection
-
-#TODO get fasta sequence of RBP
-    #http://www.uniprot.org/uniprot/P26599.fasta
-    #Done?
-#TODO get secondary sequnce from forna
-    #//*[@id="chart"]/div[2]/div[2]/div[2]/ul/li[6]/a
-#TODO find full sequence of RNA
-    #http://www.rnacentral.org/
-
 class GUI:
 
     def __init__( self , master ):
@@ -140,25 +116,32 @@ class GUI:
 
         pageLabel = Label( self.pageFrame , text = "Viewing results " , padx=5, pady=5)
         pageLabel.grid( row = 0 , column = 0 , sticky = S + W)
+        pageLabel.config( font = ( "Calibri" , 12 ))
+
 
         self.back2Button = Tkinter.Button(self.pageFrame , text = "<<" , command = lambda:self.changePage(-2))
         self.back2Button.grid( row = 0 , column = 1 , sticky = S + W)
+        self.back2Button.config( font = ( "Calibri" , 12 ))
 
         self.back1Button = Tkinter.Button(self.pageFrame , text = "<" , command = lambda:self.changePage(-1))
         self.back1Button.grid( row = 0 , column = 2 , sticky = S + W)
+        self.back1Button.config( font = ( "Calibri" , 12 ))
 
         self.forward1Button = Tkinter.Button(self.pageFrame , text = ">" , command = lambda:self.changePage(1))
         self.forward1Button.grid( row = 0 , column = 4 , sticky = S + W)
+        self.forward1Button.config( font = ( "Calibri" , 12 ))
 
         self.forward2Button = Tkinter.Button(self.pageFrame , text = ">>" , command = lambda:self.changePage(2))
         self.forward2Button.grid( row = 0 , column = 5 , sticky = S + W)
+        self.forward2Button.config( font = ( "Calibri" , 12 ))
 
-        self.pageNum.set(0)
-
+        self.pageNum.set(1)
         self.pageNum.trace("w", self.deactivateButtons)
 
         self.curPageLabel = Label(self.pageFrame , textvariable = self.pageNum)
         self.curPageLabel.grid( row = 0, column = 3, sticky = S + W)
+        self.curPageLabel.config( font = ( "Calibri" , 12 ))
+
 
         self.setTitle()
 
@@ -167,19 +150,19 @@ class GUI:
 
     def deactivateButtons( self , *args ):
         print "deactivateButton"
-        if self.pageNum.get() - 2 < 0:
+        if self.pageNum.get() - 2 < 1:
             self.back2Button.configure(state = 'disabled')
         else:
             self.back2Button.configure(state = 'normal')
-        if self.pageNum.get() - 1 < 0:
+        if self.pageNum.get() - 1 < 1:
             self.back1Button.configure(state = 'disabled')
         else:
             self.back1Button.configure(state = 'normal')
-        if self.pageNum.get() + 1 > self.totalPages:
+        if self.pageNum.get() + 1 > self.totalPages + 1:
             self.forward1Button.configure(state = 'disabled')
         else:
             self.forward1Button.configure(state = 'normal')
-        if self.pageNum.get() + 2 > self.totalPages:
+        if self.pageNum.get() + 2 > self.totalPages + 1:
             self.forward2Button.configure(state = 'disabled')
         else:
             self.forward2Button.configure(state = 'normal')
@@ -234,7 +217,7 @@ class GUI:
 
         del self.resultLabels[:]
 
-        startIndex = ( self.pageNum.get() ) * self.numPerPage
+        startIndex = ( self.pageNum.get() - 1) * self.numPerPage
         sizeOfResult = len(self.titles) + 1
 
         numPerPage = 0
@@ -268,7 +251,8 @@ class GUI:
                     self.resultLabels.append(label)
                     label.grid( row = 1 + countItems / sizeOfResult , column = countItems % sizeOfResult )
 
-                    labelToolTip = CreateToolTip(label, item)
+                    if not (countItems%sizeOfResult) == 8:
+                        labelToolTip = CreateToolTip(label, item)
 
                     label.bind("<Button-1>", lambda event,
                         arg = (countItems / sizeOfResult,(countItems%sizeOfResult) - 1 ):
@@ -281,16 +265,10 @@ class GUI:
         self.deactivateButtons()
 
     def clickedResult( self, event, arg):
-
-        print arg[0]
-        print self.pageNum.get()
-
         resultNum = int(arg[0]) + self.pageNum.get() * self.numPerPage
 
         dataSelected = self.results[resultNum][arg[1]]
         dataType = self.titles[arg[1]]
-
-        print dataSelected
 
         if dataType == self.titles[0]:
             self.clickPubMedID(dataSelected)
@@ -424,16 +402,14 @@ class CreateToolTip(object):
     """
     create a tooltip for a given widget
     """
-    def __init__(self, widget, text='widget info'):
-        self.waittime = 500     #miliseconds
-        self.wraplength = 300   #pixels
-        self.widget = widget
+    def __init__(self, parent, text='tooltip'):
+        self.wraplength = 500
+        self.parent = parent
+        self.parent.bind("<Enter>", self.enter)
+        self.parent.bind("<Leave>", self.leave)
         self.text = text
-        self.widget.bind("<Enter>", self.enter)
-        self.widget.bind("<Leave>", self.leave)
-        self.widget.bind("<ButtonPress>", self.leave)
         self.id = None
-        self.tw = None
+        self.window = None
 
     def enter(self, event=None):
         self.schedule()
@@ -444,35 +420,35 @@ class CreateToolTip(object):
 
     def schedule(self):
         self.unschedule()
-        self.id = self.widget.after(self.waittime, self.showtip)
+        self.id = self.parent.after(500, self.showtip)
 
     def unschedule(self):
         id = self.id
         self.id = None
         if id:
-            self.widget.after_cancel(id)
+            self.parent.after_cancel(id)
 
     def showtip(self, event=None):
-        x = y = 0
-        x, y, cx, cy = self.widget.bbox("insert")
-        x += self.widget.winfo_rootx() + 25
-        y += self.widget.winfo_rooty() + 20
+        col = 0
+        row = 0
+        col, row, col2, row2 = self.parent.bbox("insert")
+        col += self.parent.winfo_rootx() + 25
+        row += self.parent.winfo_rooty() + 20
         # creates a toplevel window
-        self.tw = Tkinter.Toplevel(self.widget)
+        self.window = Tkinter.Toplevel(self.parent)
         # Leaves only the label and removes the app window
-        self.tw.wm_overrideredirect(True)
-        self.tw.wm_geometry("+%d+%d" % (x, y))
-        label = Tkinter.Label(self.tw, text=self.text, justify='left',
-                       background="#ffffff", relief='solid', borderwidth=1,
+        self.window.wm_overrideredirect(True)
+        self.window.wm_geometry("+%d+%d" % (col, row))
+        label = Tkinter.Label( self.window , text = self.text,
                        wraplength = self.wraplength)
         label.config( font = ( "Calibri" , 12 ))
-        label.pack(ipadx=1)
+        label.grid(row = 0, column = 0)
 
     def hidetip(self):
-        tw = self.tw
-        self.tw= None
-        if tw:
-            tw.destroy()
+        window = self.window
+        self.window = None
+        if window:
+            window.destroy()
 
 root = Tk()
 gui = GUI(root)
